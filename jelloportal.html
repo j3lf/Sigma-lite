@@ -1,0 +1,2588 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Jello Portal</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            min-height: 100%;
+            background: #000;
+            color: white;
+            font-family:
+                "Helvetica Neue",
+                "Segoe UI",
+                Arial,
+                sans-serif;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+
+        /* =========================
+           MOVING BACKGROUND
+           ========================= */
+
+        .background {
+
+            position: fixed;
+
+            inset: -40px;
+
+            background:
+                url("assets/backroundjello.png")
+                center center / cover no-repeat;
+
+            z-index: 0;
+
+            transform:
+                translate(0px, 0px);
+
+            transition:
+                transform 0.15s ease-out;
+
+            pointer-events: none;
+        }
+
+
+        /* =========================
+           MAIN CONTENT
+           ========================= */
+
+        .container {
+
+            position: relative;
+
+            z-index: 1;
+
+            width: 100%;
+
+            height: 100vh;
+
+            padding:
+                45px 45px 90px;
+
+            overflow-y: auto;
+
+            text-align: center;
+        }
+
+
+        /* =========================
+           TITLE
+           ========================= */
+
+        h1 {
+
+            margin:
+                10px 0 8px;
+
+            font-size: 58px;
+
+            font-family:
+                "Segoe UI Light",
+                "Helvetica Neue",
+                Arial,
+                sans-serif;
+
+            font-weight: 300;
+
+            letter-spacing: -3px;
+
+            text-shadow:
+                0 3px 12px
+                rgba(0, 0, 0, 0.5);
+        }
+
+
+        .subtitle {
+
+            margin:
+                0 0 25px;
+
+            font-size: 16px;
+
+            color:
+                rgba(255, 255, 255, 0.7);
+        }
+
+
+        /* =========================
+           ONLINE COUNTER
+           ========================= */
+
+        .online-counter {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                8px 14px;
+
+            margin-bottom: 15px;
+
+            background:
+                rgba(0, 0, 0, 0.45);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.13);
+
+            border-radius: 20px;
+
+            backdrop-filter:
+                blur(8px);
+
+            -webkit-backdrop-filter:
+                blur(8px);
+
+            font-size: 13px;
+
+            color:
+                rgba(255, 255, 255, 0.75);
+        }
+
+
+        .online-dot {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #65e665;
+
+            box-shadow:
+                0 0 10px
+                rgba(101, 230, 101, 0.7);
+        }
+
+
+        #onlineCount {
+
+            color: white;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           ONLINE USERS
+           ========================= */
+
+        .online-users {
+
+            width: 100%;
+
+            max-width: 1100px;
+
+            margin:
+                0 auto 30px;
+
+            padding:
+                14px 18px;
+
+            background:
+                rgba(0, 0, 0, 0.45);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.13);
+
+            border-radius: 12px;
+
+            backdrop-filter:
+                blur(8px);
+
+            -webkit-backdrop-filter:
+                blur(8px);
+
+            text-align: left;
+        }
+
+
+        .online-users-title {
+
+            font-size: 13px;
+
+            color:
+                rgba(255, 255, 255, 0.55);
+
+            margin-bottom: 9px;
+        }
+
+
+        .online-user-list {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+        }
+
+
+        .online-user {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding:
+                6px 10px;
+
+            background:
+                rgba(255, 255, 255, 0.08);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+
+            border-radius: 20px;
+
+            font-size: 13px;
+        }
+
+
+        .online-user-dot {
+
+            width: 7px;
+
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #65e665;
+
+            box-shadow:
+                0 0 8px
+                rgba(101, 230, 101, 0.7);
+
+            flex-shrink: 0;
+        }
+
+
+        /* =========================
+           PORTAL GRID
+           ========================= */
+
+        .portal-grid {
+
+            width: 100%;
+
+            max-width: 1100px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 25px;
+
+            text-align: left;
+        }
+
+
+        /* =========================
+           PANELS
+           ========================= */
+
+        .panel {
+
+            background:
+                rgba(0, 0, 0, 0.55);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.15);
+
+            border-radius: 12px;
+
+            padding: 25px;
+
+            backdrop-filter:
+                blur(10px);
+
+            -webkit-backdrop-filter:
+                blur(10px);
+
+            box-shadow:
+                0 15px 50px
+                rgba(0, 0, 0, 0.45);
+        }
+
+
+        .panel-title {
+
+            margin:
+                0 0 20px;
+
+            font-size: 25px;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================
+           CHAT
+           ========================= */
+
+        .chat-messages {
+
+            height: 330px;
+
+            overflow-y: auto;
+
+            padding: 12px;
+
+            background:
+                rgba(255, 255, 255, 0.04);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+
+            border-radius: 8px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .message {
+
+            margin-bottom: 12px;
+
+            padding:
+                10px 12px;
+
+            background:
+                rgba(255, 255, 255, 0.06);
+
+            border-radius: 7px;
+
+            word-break: break-word;
+        }
+
+
+        .message-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .message-name {
+
+            font-weight: bold;
+
+            font-size: 14px;
+        }
+
+
+        .message-time {
+
+            font-size: 11px;
+
+            color:
+                rgba(255, 255, 255, 0.4);
+        }
+
+
+        .message-text {
+
+            color:
+                rgba(255, 255, 255, 0.8);
+
+            font-size: 14px;
+
+            white-space: pre-wrap;
+        }
+
+
+        .chat-input {
+
+            display: flex;
+
+            gap: 8px;
+        }
+
+
+        .chat-input input {
+
+            flex: 1;
+
+            min-width: 0;
+
+            padding: 12px;
+
+            border: none;
+
+            outline: none;
+
+            border-radius: 7px;
+
+            background:
+                rgba(255, 255, 255, 0.1);
+
+            color: white;
+
+            font-size: 14px;
+        }
+
+
+        .chat-input input::placeholder {
+
+            color:
+                rgba(255, 255, 255, 0.45);
+        }
+
+
+        .send-button {
+
+            padding:
+                12px 18px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: white;
+
+            color: #111;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.15s ease,
+                background 0.15s ease;
+        }
+
+
+        .send-button:hover {
+
+            background: #ddd;
+
+            transform:
+                scale(1.04);
+        }
+
+
+        /* =========================
+           CHAT STATUS
+           ========================= */
+
+        .chat-status {
+
+            margin-top: 10px;
+
+            font-size: 12px;
+
+            color:
+                rgba(255, 255, 255, 0.45);
+        }
+
+
+        /* =========================
+           SERVER LIST
+           ========================= */
+
+        .server-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+
+        .server {
+
+            padding: 16px;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.1);
+
+            border-radius: 9px;
+
+            background:
+                rgba(255, 255, 255, 0.045);
+
+            transition:
+                background 0.15s ease,
+                transform 0.15s ease;
+        }
+
+
+        .server:hover {
+
+            background:
+                rgba(255, 255, 255, 0.08);
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        .server-top {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .server-name {
+
+            font-size: 17px;
+
+            font-weight: bold;
+        }
+
+
+        .server-version {
+
+            font-size: 12px;
+
+            color:
+                rgba(255, 255, 255, 0.5);
+
+            margin-top: 3px;
+        }
+
+
+        .server-ip {
+
+            margin-top: 8px;
+
+            font-family: monospace;
+
+            font-size: 14px;
+
+            color:
+                rgba(255, 255, 255, 0.75);
+        }
+
+
+        .copy-button {
+
+            border: none;
+
+            border-radius: 6px;
+
+            padding:
+                7px 11px;
+
+            background:
+                rgba(255, 255, 255, 0.12);
+
+            color: white;
+
+            cursor: pointer;
+
+            transition:
+                background 0.15s ease;
+        }
+
+
+        .copy-button:hover {
+
+            background:
+                rgba(255, 255, 255, 0.22);
+        }
+
+
+        /* =========================
+           BACK BUTTON
+           ========================= */
+
+        .back-button {
+
+            position: fixed;
+
+            bottom: 20px;
+            left: 20px;
+
+            width: 58px;
+            height: 58px;
+
+            padding: 0;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 255, 255, 0.96);
+
+            color: #222;
+
+            cursor: pointer;
+
+            z-index: 100;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            overflow: hidden;
+
+            white-space: nowrap;
+
+            box-shadow:
+                0 5px 18px
+                rgba(0, 0, 0, 0.25);
+
+            transition:
+                width 0.25s ease,
+                transform 0.2s ease,
+                border-radius 0.25s ease;
+        }
+
+
+        .back-button:hover {
+
+            width: 120px;
+
+            transform:
+                scale(1.08);
+
+            border-radius: 35px;
+
+            background: white;
+        }
+
+
+        .back-icon {
+
+            width: 32px;
+            height: 32px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .back-icon svg {
+
+            width: 30px;
+            height: 30px;
+
+            fill: none;
+
+            stroke: #222;
+
+            stroke-width: 2.5;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+        }
+
+
+        .back-button .back-name {
+
+            display: none;
+
+            font-size: 17px;
+
+            font-weight: bold;
+        }
+
+
+        .back-button:hover .back-icon {
+
+            display: none;
+        }
+
+
+        .back-button:hover .back-name {
+
+            display: block;
+        }
+
+
+        /* =========================
+           VERSION
+           ========================= */
+
+        .version {
+
+            position: fixed;
+
+            bottom: 15px;
+            right: 15px;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            z-index: 10;
+
+            text-shadow:
+                0 2px 8px
+                rgba(0, 0, 0, 0.6);
+        }
+
+
+        /* =========================
+           QUICK SETTINGS
+           ========================= */
+
+        .quick-settings {
+
+            position: fixed;
+
+            top: 50%;
+            left: 50%;
+
+            transform:
+                translate(-50%, -50%)
+                scale(0.95);
+
+            width: 360px;
+
+            max-width:
+                calc(100vw - 30px);
+
+            padding: 24px;
+
+            background:
+                rgba(15, 15, 15, 0.94);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.15);
+
+            border-radius: 14px;
+
+            backdrop-filter:
+                blur(18px);
+
+            -webkit-backdrop-filter:
+                blur(18px);
+
+            box-shadow:
+                0 25px 80px
+                rgba(0, 0, 0, 0.65);
+
+            z-index: 1000;
+
+            opacity: 0;
+
+            visibility: hidden;
+
+            pointer-events: none;
+
+            transition:
+                opacity 0.18s ease,
+                transform 0.18s ease,
+                visibility 0.18s ease;
+        }
+
+
+        .quick-settings.open {
+
+            opacity: 1;
+
+            visibility: visible;
+
+            pointer-events: auto;
+
+            transform:
+                translate(-50%, -50%)
+                scale(1);
+        }
+
+
+        .quick-settings-title {
+
+            font-size: 24px;
+
+            font-weight: 600;
+
+            margin-bottom: 5px;
+        }
+
+
+        .quick-settings-subtitle {
+
+            font-size: 13px;
+
+            color:
+                rgba(255, 255, 255, 0.45);
+
+            margin-bottom: 20px;
+        }
+
+
+        .setting-row {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding:
+                13px 0;
+
+            border-bottom:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+        }
+
+
+        .setting-info {
+
+            text-align: left;
+        }
+
+
+        .setting-name {
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+
+        .setting-description {
+
+            margin-top: 3px;
+
+            font-size: 11px;
+
+            color:
+                rgba(255, 255, 255, 0.4);
+        }
+
+
+        /* =========================
+           TOGGLE
+           ========================= */
+
+        .toggle {
+
+            position: relative;
+
+            width: 46px;
+
+            height: 25px;
+
+            flex-shrink: 0;
+        }
+
+
+        .toggle input {
+
+            opacity: 0;
+
+            width: 0;
+
+            height: 0;
+        }
+
+
+        .slider {
+
+            position: absolute;
+
+            inset: 0;
+
+            cursor: pointer;
+
+            border-radius: 30px;
+
+            background:
+                rgba(255, 255, 255, 0.18);
+
+            transition:
+                background 0.2s ease;
+        }
+
+
+        .slider:before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 19px;
+            height: 19px;
+
+            left: 3px;
+            top: 3px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            transition:
+                transform 0.2s ease;
+        }
+
+
+        .toggle input:checked + .slider {
+
+            background: white;
+        }
+
+
+        .toggle input:checked + .slider:before {
+
+            transform:
+                translateX(21px);
+
+            background: #111;
+        }
+
+
+        /* =========================
+           MUSIC BUTTON
+           ========================= */
+
+        .music-button {
+
+            border: none;
+
+            border-radius: 7px;
+
+            padding:
+                9px 13px;
+
+            background: white;
+
+            color: #111;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.15s ease,
+                background 0.15s ease;
+        }
+
+
+        .music-button:hover {
+
+            background: #ddd;
+
+            transform:
+                scale(1.04);
+        }
+
+
+        .settings-hint {
+
+            margin-top: 18px;
+
+            text-align: center;
+
+            font-size: 11px;
+
+            color:
+                rgba(255, 255, 255, 0.3);
+        }
+
+
+        /* =========================
+           JELLO MUSIC
+           ========================= */
+
+        .music-window {
+
+            position: fixed;
+
+            top: 50%;
+            left: 50%;
+
+            width: 500px;
+            height: 600px;
+
+            max-width:
+                calc(100vw - 30px);
+
+            max-height:
+                calc(100vh - 30px);
+
+            transform:
+                translate(-50%, -50%);
+
+            background: #000;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.15);
+
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            z-index: 900;
+
+            display: none;
+
+            box-shadow:
+                0 25px 80px
+                rgba(0, 0, 0, 0.7);
+        }
+
+
+        .music-window.open {
+
+            display: block;
+        }
+
+
+        .music-window iframe {
+
+            width: 100%;
+            height: 100%;
+
+            border: none;
+        }
+
+
+        /* =========================
+           MOBILE
+           ========================= */
+
+        @media (max-width: 800px) {
+
+            body {
+                overflow: auto;
+            }
+
+            .container {
+
+                padding:
+                    25px 15px 90px;
+
+                height: auto;
+
+                min-height: 100vh;
+            }
+
+            h1 {
+                font-size: 45px;
+            }
+
+            .portal-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- BACKGROUND -->
+
+    <div
+        id="background"
+        class="background">
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+
+    <div class="container">
+
+        <h1>
+            Jello Portal
+        </h1>
+
+        <p class="subtitle">
+            Chat with other players and find Minecraft servers
+        </p>
+
+
+        <!-- ONLINE COUNTER -->
+
+        <div class="online-counter">
+
+            <span class="online-dot"></span>
+
+            <span>
+                <span id="onlineCount">0</span>
+                people online on Jello World
+            </span>
+
+        </div>
+
+
+        <!-- ONLINE USERS -->
+
+        <div class="online-users">
+
+            <div class="online-users-title">
+                👥 Online now
+            </div>
+
+            <div
+                id="onlineUserList"
+                class="online-user-list"
+            >
+
+                <span
+                    style="
+                        color:
+                        rgba(255,255,255,0.4);
+                    "
+                >
+                    Nobody online
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- PORTAL GRID -->
+
+        <div class="portal-grid">
+
+
+            <!-- CHATROOM -->
+
+            <div class="panel">
+
+                <h2 class="panel-title">
+                    💬 Chatroom
+                </h2>
+
+
+                <div
+                    id="chatMessages"
+                    class="chat-messages"
+                >
+
+                    <div
+                        id="connectingMessage"
+                        class="message"
+                    >
+
+                        <div class="message-header">
+
+                            <div class="message-name">
+                                Jello
+                            </div>
+
+                        </div>
+
+                        <div class="message-text">
+                            Connecting to Jello Chat...
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chat-input">
+
+                    <input
+                        id="chatInput"
+                        type="text"
+                        maxlength="200"
+                        placeholder="Type a message..."
+                        autocomplete="off"
+                    >
+
+                    <button
+                        class="send-button"
+                        id="sendButton"
+                    >
+                        Send
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="chatStatus"
+                    class="chat-status"
+                >
+                    Connecting...
+                </div>
+
+            </div>
+
+
+            <!-- MINECRAFT SERVERS -->
+
+            <div class="panel">
+
+                <h2 class="panel-title">
+                    🎮 Minecraft Servers
+                </h2>
+
+
+                <div class="server-list">
+
+
+                    <!-- sigma -->
+
+                    <div class="server">
+
+                        <div class="server-top">
+
+                            <div>
+
+                                <div class="server-name">
+                                    Sigma Smp
+                                </div>
+
+                                <div class="server-version">
+                                    EaglerCraft
+                                </div>
+
+                            </div>
+
+                            <button
+                                class="copy-button"
+                                onclick="copyIP('java://sigmajello112.aternos.me', this)"
+                            >
+                                Copy
+                            </button>
+
+                        </div>
+
+                        <div class="server-ip">
+                            sigmajello112.aternos.me
+                        </div>
+
+                    </div>
+
+
+                    <!-- ZENTIC -->
+
+                    <div class="server">
+
+                        <div class="server-top">
+
+                            <div>
+
+                                <div class="server-name">
+                                    Zentic
+                                </div>
+
+                                <div class="server-version">
+                                    EaglerCraft
+                                </div>
+
+                            </div>
+
+                            <button
+                                class="copy-button"
+                                onclick="copyIP('wss://zentic.cc', this)"
+                            >
+                                Copy
+                            </button>
+
+                        </div>
+
+                        <div class="server-ip">
+                            wss://zentic.cc
+                        </div>
+
+                    </div>
+
+
+                    <!-- TUFF -->
+
+                    <div class="server">
+
+                        <div class="server-top">
+
+                            <div>
+
+                                <div class="server-name">
+                                    Tuff
+                                </div>
+
+                                <div class="server-version">
+                                    EaglerCraft
+                                </div>
+
+                            </div>
+
+                            <button
+                                class="copy-button"
+                                onclick="copyIP('wss://tuff.ws', this)"
+                            >
+                                Copy
+                            </button>
+
+                        </div>
+
+                        <div class="server-ip">
+                            wss://tuff.ws
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BACK BUTTON -->
+
+    <button
+        class="back-button"
+        onclick="location.href='index.html'"
+    >
+
+        <span class="back-icon">
+
+            <svg
+                viewBox="0 0 48 48"
+                aria-hidden="true"
+            >
+
+                <path
+                    d="M30 10L16 24L30 38"
+                />
+
+                <path
+                    d="M17 24H38"
+                />
+
+            </svg>
+
+        </span>
+
+        <span class="back-name">
+            Back
+        </span>
+
+    </button>
+
+
+    <!-- VERSION -->
+
+    <div class="version">
+        5.0.2 beta
+    </div>
+
+
+    <!-- QUICK SETTINGS -->
+
+    <div
+        id="quickSettings"
+        class="quick-settings"
+    >
+
+        <div class="quick-settings-title">
+            Quick Settings
+        </div>
+
+        <div class="quick-settings-subtitle">
+            Press P to open or close
+        </div>
+
+
+        <!-- NO TAB CLOSE -->
+
+        <div class="setting-row">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    No Tab Close
+                </div>
+
+                <div class="setting-description">
+                    Warn before leaving Jello
+                </div>
+
+            </div>
+
+            <label class="toggle">
+
+                <input
+                    type="checkbox"
+                    id="noTabCloseToggle"
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <!-- FULL SCREEN -->
+
+        <div class="setting-row">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    Full Screen
+                </div>
+
+                <div class="setting-description">
+                    Enter browser fullscreen
+                </div>
+
+            </div>
+
+            <label class="toggle">
+
+                <input
+                    type="checkbox"
+                    id="fullScreenToggle"
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <!-- MOUSE BACKGROUND MOVEMENT -->
+
+        <div class="setting-row">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    Mouse Background Movement
+                </div>
+
+                <div class="setting-description">
+                    Move the background with your mouse
+                </div>
+
+            </div>
+
+            <label class="toggle">
+
+                <input
+                    type="checkbox"
+                    id="mouseBackgroundToggle"
+                >
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+
+        <!-- JELLO MUSIC -->
+
+        <div class="setting-row">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    Jello Music
+                </div>
+
+                <div class="setting-description">
+                    Open the Jello Music player
+                </div>
+
+            </div>
+
+            <button
+                id="musicButton"
+                class="music-button"
+            >
+                Open
+            </button>
+
+        </div>
+
+
+        <div class="settings-hint">
+            Press P again to close
+        </div>
+
+    </div>
+
+
+    <!-- JELLO MUSIC WINDOW -->
+
+    <div
+        id="musicWindow"
+        class="music-window"
+    >
+
+        <iframe
+            id="musicFrame"
+            src=""
+            allow="autoplay"
+        ></iframe>
+
+    </div>
+
+
+    <!-- =========================
+         FIREBASE
+         ========================= -->
+
+    <script type="module">
+
+        import {
+            initializeApp
+        } from
+        "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+        import {
+            getDatabase,
+            ref,
+            push,
+            onChildAdded,
+            set,
+            onValue,
+            onDisconnect,
+            serverTimestamp,
+            remove
+        } from
+        "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+
+        const firebaseConfig = {
+
+            apiKey:
+                "AIzaSyAIZJ7mReibw8J48F6yRut7GQAqWMalN-E",
+
+            authDomain:
+                "sigma-jello.firebaseapp.com",
+
+            databaseURL:
+                "https://sigma-jello-default-rtdb.firebaseio.com",
+
+            projectId:
+                "sigma-jello",
+
+            storageBucket:
+                "sigma-jello.firebasestorage.app",
+
+            messagingSenderId:
+                "643520880930",
+
+            appId:
+                "1:643520880930:web:2d06c3244f500be039c57b"
+
+        };
+
+
+        /* =========================
+           FIREBASE START
+           ========================= */
+
+        let database;
+
+        try {
+
+            const app =
+                initializeApp(firebaseConfig);
+
+            database =
+                getDatabase(app);
+
+        } catch (error) {
+
+            console.error(
+                "Firebase initialization failed:",
+                error
+            );
+
+        }
+
+
+        /* =========================
+           USERNAME
+           ========================= */
+
+        function getUsername() {
+
+            return (
+                localStorage.getItem(
+                    "sigmaJelloUsername"
+                ) || "Guest"
+            );
+
+        }
+
+
+        /* =========================
+           CHAT
+           ========================= */
+
+        const chatInput =
+            document.getElementById(
+                "chatInput"
+            );
+
+        const chatMessages =
+            document.getElementById(
+                "chatMessages"
+            );
+
+        const chatStatus =
+            document.getElementById(
+                "chatStatus"
+            );
+
+        const sendButton =
+            document.getElementById(
+                "sendButton"
+            );
+
+
+        function formatTime(timestamp) {
+
+            if (!timestamp) {
+                return "";
+            }
+
+            return new Date(
+                timestamp
+            ).toLocaleTimeString(
+                [],
+                {
+                    hour: "numeric",
+                    minute: "2-digit"
+                }
+            );
+
+        }
+
+
+        async function sendMessage() {
+
+            const text =
+                chatInput.value.trim();
+
+            if (!text) {
+                return;
+            }
+
+            if (!database) {
+
+                chatStatus.textContent =
+                    "Chat connection failed.";
+
+                return;
+
+            }
+
+
+            try {
+
+                await push(
+                    ref(
+                        database,
+                        "jelloChat"
+                    ),
+                    {
+
+                        username:
+                            getUsername(),
+
+                        message:
+                            text,
+
+                        timestamp:
+                            Date.now()
+
+                    }
+                );
+
+                chatInput.value = "";
+
+            } catch (error) {
+
+                console.error(
+                    "Firebase send error:",
+                    error
+                );
+
+                chatStatus.textContent =
+                    "Could not send message.";
+
+            }
+
+        }
+
+
+        sendButton.addEventListener(
+            "click",
+            sendMessage
+        );
+
+
+        chatInput.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    sendMessage();
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           FIREBASE CHAT LISTENER
+           ========================= */
+
+        if (database) {
+
+            const chatRef =
+                ref(
+                    database,
+                    "jelloChat"
+                );
+
+
+            const TWELVE_HOURS =
+                12 * 60 * 60 * 1000;
+
+
+            onChildAdded(
+
+                chatRef,
+
+                async function(snapshot) {
+
+                    const data =
+                        snapshot.val();
+
+                    if (!data) {
+                        return;
+                    }
+
+
+                    const messageTime =
+                        Number(
+                            data.timestamp
+                        ) || 0;
+
+
+                    if (
+                        messageTime <
+                        Date.now() -
+                        TWELVE_HOURS
+                    ) {
+
+                        try {
+
+                            await remove(
+                                snapshot.ref
+                            );
+
+                        } catch (error) {
+
+                            console.error(
+                                "Could not remove old message:",
+                                error
+                            );
+
+                        }
+
+                        return;
+
+                    }
+
+
+                    const connecting =
+                        document.getElementById(
+                            "connectingMessage"
+                        );
+
+
+                    if (connecting) {
+                        connecting.remove();
+                    }
+
+
+                    const message =
+                        document.createElement(
+                            "div"
+                        );
+
+                    message.className =
+                        "message";
+
+
+                    const header =
+                        document.createElement(
+                            "div"
+                        );
+
+                    header.className =
+                        "message-header";
+
+
+                    const name =
+                        document.createElement(
+                            "div"
+                        );
+
+                    name.className =
+                        "message-name";
+
+                    name.textContent =
+                        data.username ||
+                        "Guest";
+
+
+                    const time =
+                        document.createElement(
+                            "div"
+                        );
+
+                    time.className =
+                        "message-time";
+
+                    time.textContent =
+                        formatTime(
+                            data.timestamp
+                        );
+
+
+                    const messageText =
+                        document.createElement(
+                            "div"
+                        );
+
+                    messageText.className =
+                        "message-text";
+
+                    messageText.textContent =
+                        data.message || "";
+
+
+                    header.appendChild(name);
+                    header.appendChild(time);
+
+                    message.appendChild(header);
+                    message.appendChild(messageText);
+
+                    chatMessages.appendChild(
+                        message
+                    );
+
+
+                    chatMessages.scrollTop =
+                        chatMessages.scrollHeight;
+
+                },
+
+                function(error) {
+
+                    console.error(
+                        "Firebase read error:",
+                        error
+                    );
+
+                    chatStatus.textContent =
+                        "Chat connection failed.";
+
+                }
+
+            );
+
+
+            chatStatus.textContent =
+                "Connected to Jello Chat";
+
+
+            /* =========================
+               PRESENCE
+               ========================= */
+
+            const onlineCount =
+                document.getElementById(
+                    "onlineCount"
+                );
+
+            const onlineUserList =
+                document.getElementById(
+                    "onlineUserList"
+                );
+
+
+            let jelloUserID =
+                localStorage.getItem(
+                    "jelloPresenceID"
+                );
+
+
+            if (!jelloUserID) {
+
+                if (
+                    crypto &&
+                    typeof crypto.randomUUID ===
+                    "function"
+                ) {
+
+                    jelloUserID =
+                        crypto.randomUUID();
+
+                } else {
+
+                    jelloUserID =
+                        "user-" +
+                        Date.now() +
+                        "-" +
+                        Math.random()
+                            .toString(36)
+                            .substring(2);
+
+                }
+
+
+                localStorage.setItem(
+                    "jelloPresenceID",
+                    jelloUserID
+                );
+
+            }
+
+
+            const presenceRef =
+                ref(
+                    database,
+                    "jelloPresence/" +
+                    jelloUserID
+                );
+
+
+            const connectedRef =
+                ref(
+                    database,
+                    ".info/connected"
+                );
+
+
+            onValue(
+
+                connectedRef,
+
+                function(snapshot) {
+
+                    if (
+                        snapshot.val() === true
+                    ) {
+
+                        onDisconnect(
+                            presenceRef
+                        ).remove();
+
+
+                        set(
+                            presenceRef,
+                            {
+
+                                username:
+                                    getUsername(),
+
+                                connectedAt:
+                                    serverTimestamp()
+
+                            }
+                        );
+
+                    }
+
+                }
+
+            );
+
+
+            const presenceListRef =
+                ref(
+                    database,
+                    "jelloPresence"
+                );
+
+
+            onValue(
+
+                presenceListRef,
+
+                function(snapshot) {
+
+                    const users =
+                        snapshot.val();
+
+
+                    if (!users) {
+
+                        onlineCount.textContent =
+                            "0";
+
+                        onlineUserList.innerHTML =
+                            `
+                            <span style="
+                                color:
+                                rgba(255,255,255,0.4);
+                            ">
+                                Nobody online
+                            </span>
+                            `;
+
+                        return;
+
+                    }
+
+
+                    const userIDs =
+                        Object.keys(users);
+
+
+                    onlineCount.textContent =
+                        userIDs.length;
+
+
+                    onlineUserList.innerHTML =
+                        "";
+
+
+                    userIDs.forEach(
+                        function(userID) {
+
+                            const user =
+                                users[userID];
+
+
+                            const username =
+                                user.username ||
+                                "Guest";
+
+
+                            const userElement =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            userElement.className =
+                                "online-user";
+
+
+                            const dot =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            dot.className =
+                                "online-user-dot";
+
+
+                            const usernameElement =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            usernameElement.textContent =
+                                username;
+
+
+                            userElement.appendChild(
+                                dot
+                            );
+
+                            userElement.appendChild(
+                                usernameElement
+                            );
+
+                            onlineUserList.appendChild(
+                                userElement
+                            );
+
+                        }
+                    );
+
+                }
+
+            );
+
+        } else {
+
+            chatStatus.textContent =
+                "Chat unavailable.";
+
+        }
+
+    </script>
+
+
+    <!-- =========================
+         QUICK SETTINGS
+         ========================= -->
+
+    <script>
+
+        const background =
+            document.getElementById(
+                "background"
+            );
+
+        const quickSettings =
+            document.getElementById(
+                "quickSettings"
+            );
+
+        const noTabCloseToggle =
+            document.getElementById(
+                "noTabCloseToggle"
+            );
+
+        const fullScreenToggle =
+            document.getElementById(
+                "fullScreenToggle"
+            );
+
+        const mouseBackgroundToggle =
+            document.getElementById(
+                "mouseBackgroundToggle"
+            );
+
+        const musicButton =
+            document.getElementById(
+                "musicButton"
+            );
+
+        const musicWindow =
+            document.getElementById(
+                "musicWindow"
+            );
+
+        const musicFrame =
+            document.getElementById(
+                "musicFrame"
+            );
+
+
+        /* =========================
+           LOAD SAVED SETTINGS
+           ========================= */
+
+        noTabCloseToggle.checked =
+            localStorage.getItem(
+                "noTabClose"
+            ) === "true";
+
+
+        mouseBackgroundToggle.checked =
+            localStorage.getItem(
+                "mouseBackground"
+            ) !== "false";
+
+
+        /* =========================
+           QUICK SETTINGS
+           ========================= */
+
+        function toggleQuickSettings() {
+
+            quickSettings.classList.toggle(
+                "open"
+            );
+
+        }
+
+
+        /* =========================
+           P KEY
+           ========================= */
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                /*
+                 * Don't trigger Quick Settings
+                 * while typing in the chat box.
+                 */
+
+                if (
+                    event.target.tagName ===
+                    "INPUT" ||
+                    event.target.tagName ===
+                    "TEXTAREA"
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    event.key.toLowerCase() ===
+                    "p"
+                ) {
+
+                    event.preventDefault();
+
+                    toggleQuickSettings();
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           NO TAB CLOSE
+           ========================= */
+
+        function updateNoTabClose() {
+
+            if (
+                noTabCloseToggle.checked
+            ) {
+
+                localStorage.setItem(
+                    "noTabClose",
+                    "true"
+                );
+
+
+                window.onbeforeunload =
+                    function(event) {
+
+                        event.preventDefault();
+
+                        event.returnValue = "";
+
+                        return "";
+
+                    };
+
+            } else {
+
+                localStorage.setItem(
+                    "noTabClose",
+                    "false"
+                );
+
+
+                window.onbeforeunload =
+                    null;
+
+            }
+
+        }
+
+
+        noTabCloseToggle.addEventListener(
+            "change",
+            updateNoTabClose
+        );
+
+
+        updateNoTabClose();
+
+
+        /* =========================
+           FULL SCREEN
+           ========================= */
+
+        fullScreenToggle.addEventListener(
+            "change",
+            async function() {
+
+                if (
+                    fullScreenToggle.checked
+                ) {
+
+                    try {
+
+                        if (
+                            document
+                                .documentElement
+                                .requestFullscreen
+                        ) {
+
+                            await document
+                                .documentElement
+                                .requestFullscreen();
+
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            "Fullscreen error:",
+                            error
+                        );
+
+                        fullScreenToggle.checked =
+                            false;
+
+                    }
+
+                } else {
+
+                    try {
+
+                        if (
+                            document.fullscreenElement
+                        ) {
+
+                            await document
+                                .exitFullscreen();
+
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            "Exit fullscreen error:",
+                            error
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           FULLSCREEN STATE
+           ========================= */
+
+        document.addEventListener(
+            "fullscreenchange",
+            function() {
+
+                fullScreenToggle.checked =
+                    !!document.fullscreenElement;
+
+            }
+        );
+
+
+        /* =========================
+           MOUSE BACKGROUND
+           ========================= */
+
+        mouseBackgroundToggle.addEventListener(
+            "change",
+            function() {
+
+                localStorage.setItem(
+                    "mouseBackground",
+                    mouseBackgroundToggle.checked
+                );
+
+
+                if (
+                    !mouseBackgroundToggle.checked
+                ) {
+
+                    background.style.transform =
+                        "translate(0px, 0px)";
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           BACKGROUND MOVEMENT
+           ========================= */
+
+        document.addEventListener(
+            "mousemove",
+            function(event) {
+
+                if (
+                    !mouseBackgroundToggle.checked
+                ) {
+
+                    return;
+
+                }
+
+
+                const x =
+                    (
+                        event.clientX /
+                        window.innerWidth
+                    ) - 0.5;
+
+
+                const y =
+                    (
+                        event.clientY /
+                        window.innerHeight
+                    ) - 0.5;
+
+
+                const moveX =
+                    x * 35;
+
+
+                const moveY =
+                    y * 35;
+
+
+                background.style.transform =
+                    `translate(${moveX}px, ${moveY}px)`;
+
+            }
+        );
+
+
+        /* =========================
+           JELLO MUSIC
+           ========================= */
+
+        musicButton.addEventListener(
+            "click",
+            function() {
+
+                musicFrame.src =
+                    "music.html";
+
+
+                musicWindow.classList.add(
+                    "open"
+                );
+
+
+                quickSettings.classList.remove(
+                    "open"
+                );
+
+            }
+        );
+
+
+        /* =========================
+           COPY IP
+           ========================= */
+
+        window.copyIP =
+            function(ip, button) {
+
+                if (
+                    navigator.clipboard &&
+                    navigator.clipboard.writeText
+                ) {
+
+                    navigator.clipboard
+                        .writeText(ip)
+                        .then(function() {
+
+                            const oldText =
+                                button.textContent;
+
+
+                            button.textContent =
+                                "Copied!";
+
+
+                            setTimeout(
+                                function() {
+
+                                    button.textContent =
+                                        oldText;
+
+                                },
+                                1200
+                            );
+
+                        })
+                        .catch(function() {
+
+                            alert(
+                                "Server IP: " +
+                                ip
+                            );
+
+                        });
+
+                } else {
+
+                    alert(
+                        "Server IP: " +
+                        ip
+                    );
+
+                }
+
+            };
+
+    </script>
+
+
+</body>
+</html>

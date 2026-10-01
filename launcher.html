@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loading...</title>
+
+    <script>
+        function launch() {
+
+            // Open a new tab at about:blank
+            const newWindow = window.open("about:blank", "_blank");
+
+            // Check if the browser blocked the popup
+            if (!newWindow) {
+                document.body.innerHTML =
+                    "<h2>Please allow pop-ups for this site.</h2>";
+                return;
+            }
+
+            // Find index.html relative to the launcher
+            const indexURL = new URL(
+                "index.html",
+                window.location.href
+            ).href;
+
+            // Put index.html inside the about:blank tab
+            newWindow.document.open();
+
+            newWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>about:blank</title>
+
+                    <style>
+                        html, body {
+                            margin: 0;
+                            padding: 0;
+                            width: 100%;
+                            height: 100%;
+                            overflow: hidden;
+                            background: black;
+                        }
+
+                        iframe {
+                            width: 100%;
+                            height: 100%;
+                            border: none;
+                            display: block;
+                        }
+                    </style>
+                </head>
+
+                <body>
+
+                    <iframe
+                        src="${indexURL}"
+                        allowfullscreen>
+                    </iframe>
+
+                </body>
+                </html>
+            `);
+
+            newWindow.document.close();
+
+
+            // Send the original launcher tab to Google
+            window.location.href = "https://www.google.com";
+        }
+
+
+        // Launch automatically when the page loads
+        window.onload = launch;
+    </script>
+</head>
+
+<body>
+
+    <h2>Launching Sigma Jello...</h2>
+
+</body>
+</html>
