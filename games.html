@@ -122,20 +122,24 @@
        BUTTON WIDTHS
     ========================= */
 
-    .resent-button:hover {
-        width: 140px;
-    }
-
     .btd5-button:hover {
         width: 160px;
+    }
+
+    .nzp-button:hover {
+        width: 180px;
+    }
+
+    .resent-button:hover {
+        width: 140px;
     }
 
     .terraria-button:hover {
         width: 130px;
     }
 
-    .nzp-button:hover {
-        width: 180px;
+    .ultimate-button:hover {
+        width: 150px;
     }
 
     .webretro-button:hover {
@@ -144,10 +148,6 @@
 
     .minecraft-button:hover {
         width: 150px;
-    }
-
-    .eaglerstuff-button:hover {
-        width: 180px;
     }
 
     /* =========================
@@ -523,20 +523,9 @@
 <h1>Games</h1>
 
 
-<!-- Remaining Game Buttons -->
+<!-- Game Buttons -->
 
 <div class="game-buttons">
-
-    <!-- Resent -->
-
-    <button
-        class="game-button resent-button"
-        onclick="launchEaglercraft('assets/jello/resent.html')"
-    >
-        <span class="game-letter">R</span>
-        <span class="game-name">Resent</span>
-    </button>
-
 
     <!-- Bloons TD 5 -->
 
@@ -546,6 +535,28 @@
     >
         <span class="game-letter">B</span>
         <span class="game-name">Bloons TD 5</span>
+    </button>
+
+
+    <!-- NZP -->
+
+    <button
+        class="game-button nzp-button"
+        onclick="location.href='assets/jello/nzp/index.html'"
+    >
+        <span class="game-letter">N</span>
+        <span class="game-name">NZP</span>
+    </button>
+
+
+    <!-- Resent -->
+
+    <button
+        class="game-button resent-button"
+        onclick="launchEaglercraft('assets/jello/resent.html')"
+    >
+        <span class="game-letter">R</span>
+        <span class="game-name">Resent</span>
     </button>
 
 
@@ -560,14 +571,14 @@
     </button>
 
 
-    <!-- NZP -->
+    <!-- Ultimate -->
 
     <button
-        class="game-button nzp-button"
-        onclick="location.href='assets/jello/nzp/index.html'"
+        class="game-button ultimate-button"
+        onclick="launchEaglercraft('assets/jello/eaglerstuff/Ultimate.html')"
     >
-        <span class="game-letter">N</span>
-        <span class="game-name">NZP</span>
+        <span class="game-letter">U</span>
+        <span class="game-name">Ultimate</span>
     </button>
 
 
@@ -590,17 +601,6 @@
     >
         <span class="game-letter">1.12</span>
         <span class="game-name">1.12.2</span>
-    </button>
-
-
-    <!-- EaglerStuff -->
-
-    <button
-        class="game-button eaglerstuff-button"
-        onclick="location.href='assets/jello/eaglermod.html'"
-    >
-        <span class="game-letter">E</span>
-        <span class="game-name">EaglerStuff</span>
     </button>
 
 </div>
