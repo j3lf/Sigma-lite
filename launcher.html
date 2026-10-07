@@ -6,6 +6,14 @@
     <script>
         function launch() {
 
+            // Get settings from localStorage
+            const tabName =
+                localStorage.getItem("tabName") || "about:blank";
+
+            const tabIcon =
+                localStorage.getItem("tabIcon") || "";
+
+
             // Open a new tab at about:blank
             const newWindow = window.open("about:blank", "_blank");
 
@@ -16,20 +24,41 @@
                 return;
             }
 
+
             // Find index.html relative to the launcher
             const indexURL = new URL(
                 "index.html",
                 window.location.href
             ).href;
 
-            // Put index.html inside the about:blank tab
+
+            // Only allow the Google Drive icon
+            const googleDriveIcon =
+                "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico";
+
+            let iconHTML = "";
+
+            if (tabIcon === googleDriveIcon) {
+                iconHTML = `
+                    <link
+                        rel="icon"
+                        href="${googleDriveIcon}"
+                    >
+                `;
+            }
+
+
+            // Create the about:blank page
             newWindow.document.open();
 
             newWindow.document.write(`
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>about:blank</title>
+
+                    <title>${escapeHTML(tabName)}</title>
+
+                    ${iconHTML}
 
                     <style>
                         html, body {
@@ -48,12 +77,13 @@
                             display: block;
                         }
                     </style>
+
                 </head>
 
                 <body>
 
                     <iframe
-                        src="${indexURL}"
+                        src="${escapeAttribute(indexURL)}"
                         allowfullscreen>
                     </iframe>
 
@@ -66,6 +96,25 @@
 
             // Send the original launcher tab to Google
             window.location.href = "https://www.google.com";
+        }
+
+
+        function escapeHTML(text) {
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        function escapeAttribute(text) {
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/"/g, "&quot;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
         }
 
 
