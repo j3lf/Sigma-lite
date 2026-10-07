@@ -126,10 +126,6 @@
         width: 160px;
     }
 
-    .nzp-button:hover {
-        width: 180px;
-    }
-
     .resent-button:hover {
         width: 140px;
     }
@@ -538,17 +534,6 @@
     </button>
 
 
-    <!-- NZP -->
-
-    <button
-        class="game-button nzp-button"
-        onclick="location.href='assets/jello/nzp/index.html'"
-    >
-        <span class="game-letter">N</span>
-        <span class="game-name">NZP</span>
-    </button>
-
-
     <!-- Resent -->
 
     <button
@@ -568,6 +553,17 @@
     >
         <span class="game-letter">T</span>
         <span class="game-name">Terraria</span>
+    </button>
+
+
+    <!-- Test -->
+
+    <button
+        class="game-button test-button"
+        onclick="launchExternal('https://web.archive.org/web/20261006055917/https://playgta5.com/')"
+    >
+        <span class="game-letter">T</span>
+        <span class="game-name">Test</span>
     </button>
 
 
@@ -745,6 +741,84 @@
     /* =========================
        GAME LAUNCHER
     ========================= */
+
+    function launchExternal(externalURL) {
+
+        const gameWindow =
+            window.open("about:blank", "_blank");
+
+
+        if (!gameWindow) {
+
+            alert(
+                "Please allow pop-ups for Sigma Jello."
+            );
+
+            return;
+        }
+
+
+        gameWindow.document.open();
+
+        gameWindow.document.write(`
+
+            <!DOCTYPE html>
+
+            <html>
+
+            <head>
+
+                <title>about:blank</title>
+
+                <style>
+
+                    html,
+                    body {
+
+                        margin: 0;
+                        padding: 0;
+
+                        width: 100%;
+                        height: 100%;
+
+                        overflow: hidden;
+
+                        background: black;
+
+                    }
+
+                    iframe {
+
+                        width: 100%;
+                        height: 100%;
+
+                        border: none;
+
+                        display: block;
+
+                    }
+
+                </style>
+
+            </head>
+
+            <body>
+
+                <iframe
+                    src="${externalURL}"
+                    allowfullscreen>
+                </iframe>
+
+            </body>
+
+            </html>
+
+        `);
+
+        gameWindow.document.close();
+
+    }
+
 
     function launchEaglercraft(gamePath) {
 
