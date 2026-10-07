@@ -213,6 +213,77 @@
             transform: translateX(23px);
         }
 
+        /* =========================
+           FALLING SNOW
+           ========================= */
+
+        #snowContainer {
+            position: fixed;
+            inset: 0;
+
+            pointer-events: none;
+
+            overflow: hidden;
+
+            z-index: 5;
+        }
+
+        .snowflake {
+            position: absolute;
+
+            top: -20px;
+
+            color: white;
+
+            user-select: none;
+
+            pointer-events: none;
+
+            animation-name: snowfall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+
+            text-shadow:
+                0 0 4px rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform:
+                    translateY(-20px)
+                    translateX(0px)
+                    rotate(0deg);
+            }
+
+            25% {
+                transform:
+                    translateY(25vh)
+                    translateX(18px)
+                    rotate(90deg);
+            }
+
+            50% {
+                transform:
+                    translateY(50vh)
+                    translateX(-15px)
+                    rotate(180deg);
+            }
+
+            75% {
+                transform:
+                    translateY(75vh)
+                    translateX(20px)
+                    rotate(270deg);
+            }
+
+            100% {
+                transform:
+                    translateY(110vh)
+                    translateX(-10px)
+                    rotate(360deg);
+            }
+        }
+
         /* Back Button */
 
         .back-button {
@@ -378,6 +449,10 @@
 
     <div id="background" class="background"></div>
 
+    <!-- Falling Snow -->
+
+    <div id="snowContainer"></div>
+
 
     <div class="container">
 
@@ -446,6 +521,27 @@
         </div>
 
 
+        <!-- Falling Snow -->
+
+        <div class="setting">
+
+            <span class="setting-name">
+                Falling Snow
+            </span>
+
+            <label class="switch">
+
+                <input
+                    type="checkbox"
+                    id="fallingSnow">
+
+                <span class="slider"></span>
+
+            </label>
+
+        </div>
+
+
         <!-- About:blank Launcher Settings -->
 
         <div class="setting launcher-settings">
@@ -474,8 +570,13 @@
                     class="launcher-select"
                     aria-label="About:blank tab icon"
                 >
-                    <option value="none">None (normal about:blank icon)</option>
-                    <option value="drive">Google Drive</option>
+                    <option value="none">
+                        None (normal about:blank icon)
+                    </option>
+
+                    <option value="drive">
+                        Google Drive
+                    </option>
                 </select>
 
                 <span class="launcher-description">
@@ -631,6 +732,12 @@
         const mouseBackground =
             document.getElementById("mouseBackground");
 
+        const fallingSnow =
+            document.getElementById("fallingSnow");
+
+        const snowContainer =
+            document.getElementById("snowContainer");
+
         const launcherTabName =
             document.getElementById("launcherTabName");
 
@@ -659,6 +766,7 @@
 
         const defaultLauncherTabName = "about:blank";
         const defaultLauncherTabIcon = "none";
+
         const driveFavicon =
             "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico";
 
@@ -1048,6 +1156,121 @@
                     background.style.transform =
                         "translate(0px, 0px)";
 
+                }
+
+            }
+        );
+
+
+        /* =========================
+           FALLING SNOW
+           ========================= */
+
+        let fallingSnowEnabled =
+            localStorage.getItem("fallingSnow")
+            === "true";
+
+
+        fallingSnow.checked =
+            fallingSnowEnabled;
+
+
+        function createSnow() {
+
+            snowContainer.innerHTML = "";
+
+            if (!fallingSnowEnabled)
+                return;
+
+
+            const snowAmount =
+                Math.min(
+                    100,
+                    Math.max(
+                        35,
+                        Math.floor(
+                            window.innerWidth / 14
+                        )
+                    )
+                );
+
+
+            for (
+                let i = 0;
+                i < snowAmount;
+                i++
+            ) {
+
+                const snowflake =
+                    document.createElement("div");
+
+
+                snowflake.className =
+                    "snowflake";
+
+
+                snowflake.textContent =
+                    "❄";
+
+
+                snowflake.style.left =
+                    Math.random() * 100 + "%";
+
+
+                snowflake.style.fontSize =
+                    (Math.random() * 10 + 8) + "px";
+
+
+                snowflake.style.opacity =
+                    Math.random() * 0.65 + 0.35;
+
+
+                snowflake.style.animationDuration =
+                    (Math.random() * 7 + 6) + "s";
+
+
+                snowflake.style.animationDelay =
+                    "-" + (Math.random() * 10) + "s";
+
+
+                snowContainer.appendChild(
+                    snowflake
+                );
+
+            }
+
+        }
+
+
+        createSnow();
+
+
+        fallingSnow.addEventListener(
+            "change",
+            function() {
+
+                fallingSnowEnabled =
+                    this.checked;
+
+
+                localStorage.setItem(
+                    "fallingSnow",
+                    fallingSnowEnabled
+                );
+
+
+                createSnow();
+
+            }
+        );
+
+
+        window.addEventListener(
+            "resize",
+            function() {
+
+                if (fallingSnowEnabled) {
+                    createSnow();
                 }
 
             }
