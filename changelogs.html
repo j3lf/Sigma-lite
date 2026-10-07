@@ -41,6 +41,48 @@
         pointer-events: none;
     }
 
+    #snowContainer {
+        position: fixed;
+        inset: 0;
+
+        pointer-events: none;
+
+        overflow: hidden;
+
+        z-index: 5;
+    }
+
+    .snowflake {
+        position: absolute;
+
+        top: -20px;
+
+        color: white;
+
+        user-select: none;
+        pointer-events: none;
+
+        animation-name: snowfall;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+
+        opacity: 0.9;
+    }
+
+    @keyframes snowfall {
+        from {
+            transform:
+                translateY(-20px)
+                translateX(0);
+        }
+
+        to {
+            transform:
+                translateY(110vh)
+                translateX(40px);
+        }
+    }
+
     .container {
         width: 100%;
         max-width: 760px;
@@ -467,6 +509,8 @@
     class="background"
 ></div>
 
+<div id="snowContainer"></div>
+
 <div class="container">
 
 <div class="header">
@@ -480,18 +524,59 @@
 </div>
 
 
-<!-- VERSION 5.0.2 BETA -->
+<!-- VERSION 5.0.3 BETA -->
 
 <div class="changelog">
 
     <div class="version-header">
 
         <div class="version">
-            Sigma 5.0.2 Beta
+            Sigma 5.0.3 Beta
         </div>
 
         <div class="version-badge">
             LATEST
+        </div>
+
+    </div>
+
+    <div class="date">
+        October 7, 2026
+    </div>
+
+    <div class="description">
+        Fixed bugs, added more games,
+        and removed some unnecessary
+        stuff from Sigma Jello.
+    </div>
+
+    <ul class="features">
+
+        <li>
+            Fixed bugs
+        </li>
+
+        <li>
+            Added more games
+        </li>
+
+        <li>
+            Removed some unnecessary stuff
+        </li>
+
+    </ul>
+
+</div>
+
+
+<!-- VERSION 5.0.2 BETA -->
+
+<div class="changelog old-version">
+
+    <div class="version-header">
+
+        <div class="version">
+            Sigma 5.0.2 Beta
         </div>
 
     </div>
@@ -789,7 +874,6 @@
 <button
 class="back-button"
 onclick="location.href='index.html'"
-
 >
 
 <span class="back-letter">
@@ -801,6 +885,7 @@ onclick="location.href='index.html'"
 </span>
 
 </button>
+
 
 <div
     id="quickSettings"
@@ -832,6 +917,7 @@ onclick="location.href='index.html'"
 
     </div>
 
+
     <div class="quick-setting">
 
         <span>
@@ -851,6 +937,27 @@ onclick="location.href='index.html'"
 
     </div>
 
+
+    <div class="quick-setting">
+
+        <span>
+            Falling Snow
+        </span>
+
+        <label class="switch">
+
+            <input
+                type="checkbox"
+                id="quickFallingSnow"
+            >
+
+            <span class="slider"></span>
+
+        </label>
+
+    </div>
+
+
     <p class="hint">
         Press P to close
     </p>
@@ -858,6 +965,7 @@ onclick="location.href='index.html'"
 </div>
 
 </div>
+
 
 <script>
 
@@ -876,9 +984,19 @@ onclick="location.href='index.html'"
             "quickFullscreen"
         );
 
+    const quickFallingSnow =
+        document.getElementById(
+            "quickFallingSnow"
+        );
+
     const background =
         document.getElementById(
             "background"
+        );
+
+    const snowContainer =
+        document.getElementById(
+            "snowContainer"
         );
 
 
@@ -1023,6 +1141,114 @@ onclick="location.href='index.html'"
 
         }
     );
+
+
+    let fallingSnowEnabled =
+        localStorage.getItem(
+            "fallingSnow"
+        ) === "true";
+
+
+    quickFallingSnow.checked =
+        fallingSnowEnabled;
+
+
+    function createSnowflake() {
+
+        const snowflake =
+            document.createElement(
+                "div"
+            );
+
+        snowflake.className =
+            "snowflake";
+
+        snowflake.textContent =
+            "•";
+
+        snowflake.style.left =
+            Math.random() * 100 + "vw";
+
+        snowflake.style.fontSize =
+            (Math.random() * 8 + 5) + "px";
+
+        snowflake.style.animationDuration =
+            (Math.random() * 5 + 5) + "s";
+
+        snowflake.style.animationDelay =
+            (Math.random() * 5) + "s";
+
+        snowContainer.appendChild(
+            snowflake
+        );
+
+        setTimeout(
+            function() {
+
+                snowflake.remove();
+
+            },
+            12000
+        );
+
+    }
+
+
+    function startSnow() {
+
+        if (!fallingSnowEnabled) {
+            return;
+        }
+
+        for (
+            let i = 0;
+            i < 35;
+            i++
+        ) {
+
+            createSnowflake();
+
+        }
+
+    }
+
+
+    function stopSnow() {
+
+        snowContainer.innerHTML = "";
+
+    }
+
+
+    quickFallingSnow.addEventListener(
+        "change",
+        function() {
+
+            fallingSnowEnabled =
+                this.checked;
+
+            localStorage.setItem(
+                "fallingSnow",
+                this.checked
+                    ? "true"
+                    : "false"
+            );
+
+            if (fallingSnowEnabled) {
+
+                startSnow();
+
+            } else {
+
+                stopSnow();
+
+            }
+
+        }
+    );
+
+
+    startSnow();
 
 
     window.addEventListener(
