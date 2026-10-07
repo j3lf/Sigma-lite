@@ -73,6 +73,70 @@
             font-weight: bold;
         }
 
+        /* About:blank Launcher Settings */
+
+        .launcher-settings {
+            display: block;
+        }
+
+        .launcher-input,
+        .launcher-select {
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            color: black;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+            outline: none;
+        }
+
+        .launcher-input:focus,
+        .launcher-select:focus {
+            border-color: #777;
+        }
+
+        .launcher-description {
+            display: block;
+            margin-top: 6px;
+            color: #666;
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        .launcher-save {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 5px;
+            background: #111;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            transition:
+                background 0.15s ease,
+                transform 0.15s ease;
+        }
+
+        .launcher-save:hover {
+            background: #333;
+            transform: translateX(3px);
+        }
+
+        .launcher-saved {
+            display: block;
+            min-height: 16px;
+            margin-top: 7px;
+            color: #555;
+            font-size: 12px;
+        }
+
         /* Sign Out Button */
 
         .sign-out-button {
@@ -382,6 +446,61 @@
         </div>
 
 
+        <!-- About:blank Launcher Settings -->
+
+        <div class="setting launcher-settings">
+
+            <span class="setting-name">
+                About:blank Launcher
+            </span>
+
+            <div style="width: 100%;">
+
+                <input
+                    type="text"
+                    id="launcherTabName"
+                    class="launcher-input"
+                    placeholder="About:blank"
+                    maxlength="60"
+                    aria-label="About:blank tab name"
+                >
+
+                <span class="launcher-description">
+                    Tab name used when a launcher opens in about:blank.
+                </span>
+
+                <select
+                    id="launcherTabIcon"
+                    class="launcher-select"
+                    aria-label="About:blank tab icon"
+                >
+                    <option value="none">None (normal about:blank icon)</option>
+                    <option value="drive">Google Drive</option>
+                </select>
+
+                <span class="launcher-description">
+                    Choose the icon shown on launcher tabs.
+                </span>
+
+                <button
+                    type="button"
+                    class="launcher-save"
+                    onclick="saveLauncherSettings()"
+                >
+                    Save Launcher Settings
+                </button>
+
+                <span
+                    id="launcherSaved"
+                    class="launcher-saved"
+                    aria-live="polite"
+                ></span>
+
+            </div>
+
+        </div>
+
+
         <!-- Sign Out -->
 
         <button
@@ -512,6 +631,15 @@
         const mouseBackground =
             document.getElementById("mouseBackground");
 
+        const launcherTabName =
+            document.getElementById("launcherTabName");
+
+        const launcherTabIcon =
+            document.getElementById("launcherTabIcon");
+
+        const launcherSaved =
+            document.getElementById("launcherSaved");
+
         const quickSettings =
             document.getElementById("quickSettings");
 
@@ -523,6 +651,61 @@
 
         const quickMouseBackground =
             document.getElementById("quickMouseBackground");
+
+
+        /* =========================
+           ABOUT:BLANK LAUNCHER SETTINGS
+           ========================= */
+
+        const defaultLauncherTabName = "about:blank";
+        const defaultLauncherTabIcon = "none";
+        const driveFavicon =
+            "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico";
+
+
+        function loadLauncherSettings() {
+
+            launcherTabName.value =
+                localStorage.getItem("tabName")
+                || defaultLauncherTabName;
+
+            launcherTabIcon.value =
+                localStorage.getItem("tabIcon")
+                || defaultLauncherTabIcon;
+
+        }
+
+
+        function saveLauncherSettings() {
+
+            const name =
+                launcherTabName.value.trim()
+                || defaultLauncherTabName;
+
+            const icon =
+                launcherTabIcon.value === "drive"
+                    ? "drive"
+                    : "none";
+
+            localStorage.setItem("tabName", name);
+            localStorage.setItem("tabIcon", icon);
+
+            launcherTabName.value = name;
+            launcherTabIcon.value = icon;
+
+            launcherSaved.textContent =
+                "Launcher settings saved.";
+
+            setTimeout(function() {
+
+                launcherSaved.textContent = "";
+
+            }, 2000);
+
+        }
+
+
+        loadLauncherSettings();
 
 
         /* =========================
