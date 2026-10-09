@@ -126,12 +126,12 @@
         width: 160px;
     }
 
-    .fnae-button:hover {
-        width: 220px;
+    .flash-button:hover {
+        width: 200px;
     }
 
-    .gta-button:hover {
-        width: 180px;
+    .fnae-button:hover {
+        width: 220px;
     }
 
     .moon-button:hover {
@@ -550,6 +550,17 @@
     </button>
 
 
+    <!-- Flash Emulator -->
+
+    <button
+        class="game-button flash-button"
+        onclick="launchEaglercraft('assets/jello/flash.html')"
+    >
+        <span class="game-letter">F</span>
+        <span class="game-name">Flash Emulator</span>
+    </button>
+
+
     <!-- Five Nights at Epstein -->
 
     <button
@@ -558,17 +569,6 @@
     >
         <span class="game-letter">F</span>
         <span class="game-name">Five Nights at Epstein</span>
-    </button>
-
-
-    <!-- GTA Vice City -->
-
-    <button
-        class="game-button gta-button"
-        onclick="launchEaglercraft('assets/jello/gta-vice-city-wasm-main/index.html')"
-    >
-        <span class="game-letter">GTA</span>
-        <span class="game-name">GTA Vice City</span>
     </button>
 
 
@@ -613,17 +613,6 @@
     >
         <span class="game-letter">T</span>
         <span class="game-name">Terraria</span>
-    </button>
-
-
-    <!-- Test -->
-
-    <button
-        class="game-button test-button"
-        onclick="launchExternal('https://web.archive.org/web/20261006055917/https://playgta5.com/')"
-    >
-        <span class="game-letter">T</span>
-        <span class="game-name">Test</span>
     </button>
 
 
@@ -1226,6 +1215,17 @@
             if (event.code === "KeyP") {
 
                 if (event.repeat) return;
+
+                if (
+                    event.target instanceof HTMLElement &&
+                    (
+                        event.target.isContentEditable ||
+                        ["INPUT", "TEXTAREA", "SELECT"]
+                            .includes(event.target.tagName)
+                    )
+                ) {
+                    return;
+                }
 
                 event.preventDefault();
 
