@@ -138,6 +138,10 @@
         width: 120px;
     }
 
+    .nzp-button:hover {
+        width: 130px;
+    }
+
     .resent-button:hover {
         width: 140px;
     }
@@ -225,77 +229,6 @@
     }
 
     .back-button:hover .back-text {
-        display: block;
-    }
-
-    /* =========================
-       ULTRACOOKIES GLOBE BUTTON
-    ========================= */
-
-    .globe-button {
-        position: fixed;
-
-        bottom: 20px;
-        right: 20px;
-
-        width: 65px;
-        height: 65px;
-
-        padding: 0;
-        margin: 0;
-
-        border-radius: 50%;
-        border: none;
-
-        background: white;
-        color: black;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-
-        cursor: pointer;
-        overflow: hidden;
-        white-space: nowrap;
-
-        transition:
-            width 0.25s ease,
-            transform 0.2s ease,
-            background 0.2s ease,
-            border-radius 0.25s ease;
-
-        z-index: 10;
-    }
-
-    .globe-button:hover {
-        width: 155px;
-
-        background: #ddd;
-
-        transform: scale(1.08);
-
-        border-radius: 35px;
-    }
-
-    .globe-icon {
-        width: 32px;
-        height: 32px;
-
-        flex-shrink: 0;
-
-        display: block;
-    }
-
-    .globe-text {
-        display: none;
-
-        font-size: 16px;
-        font-weight: bold;
-        font-family: Arial, sans-serif;
-    }
-
-    .globe-button:hover .globe-text {
         display: block;
     }
 
@@ -650,6 +583,17 @@
     </button>
 
 
+    <!-- NZP -->
+
+    <button
+        class="game-button nzp-button"
+        onclick="launchExternal('https://npcookies.wasmer.app/')"
+    >
+        <span class="game-letter">N</span>
+        <span class="game-name">NZP</span>
+    </button>
+
+
     <!-- Resent -->
 
     <button
@@ -726,34 +670,6 @@
 >
     <span class="back-letter">←</span>
     <span class="back-text">Back</span>
-</button>
-
-
-<!-- Ultracookies Globe Button -->
-
-<button
-    class="globe-button"
-    onclick="launchExternal('https://ultracookies.wasmer.app/')"
-    aria-label="Open Ultracookies"
-    title="Ultracookies"
->
-    <svg
-        class="globe-icon"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-    >
-        <circle cx="12" cy="12" r="10"></circle>
-        <path d="M2 12h20"></path>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-    </svg>
-
-    <span class="globe-text">Ultracookies</span>
 </button>
 
 
