@@ -1290,7 +1290,7 @@
 
         <button
             class="circle-button portal-button"
-            onclick="location.href='jelloportal.html'"
+            onclick="launchJelloPortal()"
         >
 
             <span class="icon">
@@ -1665,7 +1665,15 @@
 </div>
 
 
+<script src="assets/tab-launcher.js"></script>
+
 <script>
+    function launchJelloPortal() {
+        const portalURL = "https://cookietest.wasmer.app/uv/service/hvtrs8%2F-j1ld.eivhwb%2Cim%2FQiemc-nive-jglnoroptcl%2Chvmn";
+        if (!openLauncherTab(portalURL)) {
+            alert("Please allow pop-ups for Sigma Jello.");
+        }
+    }
 
     /* =========================
        ELEMENTS
