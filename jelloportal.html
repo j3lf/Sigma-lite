@@ -624,121 +624,6 @@
 
 
         /* =========================
-           BACK BUTTON
-           ========================= */
-
-        .back-button {
-
-            position: fixed;
-
-            bottom: 20px;
-            left: 20px;
-
-            width: 58px;
-            height: 58px;
-
-            padding: 0;
-
-            border: none;
-
-            border-radius: 50%;
-
-            background:
-                rgba(255, 255, 255, 0.96);
-
-            color: #222;
-
-            cursor: pointer;
-
-            z-index: 100;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            overflow: hidden;
-
-            white-space: nowrap;
-
-            box-shadow:
-                0 5px 18px
-                rgba(0, 0, 0, 0.25);
-
-            transition:
-                width 0.25s ease,
-                transform 0.2s ease,
-                border-radius 0.25s ease;
-        }
-
-
-        .back-button:hover {
-
-            width: 120px;
-
-            transform:
-                scale(1.08);
-
-            border-radius: 35px;
-
-            background: white;
-        }
-
-
-        .back-icon {
-
-            width: 32px;
-            height: 32px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-        }
-
-
-        .back-icon svg {
-
-            width: 30px;
-            height: 30px;
-
-            fill: none;
-
-            stroke: #222;
-
-            stroke-width: 2.5;
-
-            stroke-linecap: round;
-
-            stroke-linejoin: round;
-        }
-
-
-        .back-button .back-name {
-
-            display: none;
-
-            font-size: 17px;
-
-            font-weight: bold;
-        }
-
-
-        .back-button:hover .back-icon {
-
-            display: none;
-        }
-
-
-        .back-button:hover .back-name {
-
-            display: block;
-        }
-
-
-        /* =========================
            VERSION
            ========================= */
 
@@ -1383,43 +1268,10 @@
     </div>
 
 
-    <!-- BACK BUTTON -->
-
-    <button
-        class="back-button"
-        onclick="location.href='index.html'"
-    >
-
-        <span class="back-icon">
-
-            <svg
-                viewBox="0 0 48 48"
-                aria-hidden="true"
-            >
-
-                <path
-                    d="M30 10L16 24L30 38"
-                />
-
-                <path
-                    d="M17 24H38"
-                />
-
-            </svg>
-
-        </span>
-
-        <span class="back-name">
-            Back
-        </span>
-
-    </button>
-
-
     <!-- VERSION -->
 
     <div class="version">
-        5.0.3 beta r1
+        5.0.3 Beta r2
     </div>
 
 

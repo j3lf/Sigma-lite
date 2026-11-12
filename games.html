@@ -121,10 +121,6 @@
        BUTTON WIDTHS
     ========================= */
 
-    .btd5-button:hover {
-        width: 160px;
-    }
-
     .flash-button:hover {
         width: 200px;
     }
@@ -530,22 +526,11 @@
 
 <div class="game-buttons">
 
-    <!-- Bloons TD 5 -->
-
-    <button
-        class="game-button btd5-button"
-        onclick="location.href='assets/jello/btd5.html'"
-    >
-        <span class="game-letter">B</span>
-        <span class="game-name">Bloons TD 5</span>
-    </button>
-
-
     <!-- Flash Emulator -->
 
     <button
         class="game-button flash-button"
-        onclick="launchEaglercraft('assets/jello/flash.html')"
+        onclick="launchGame('assets/jello/flash.html')"
     >
         <span class="game-letter">F</span>
         <span class="game-name">Flash Emulator</span>
@@ -556,7 +541,7 @@
 
     <button
         class="game-button fnae-button"
-        onclick="launchExternal('https://fnaecookie.wasmer.app/')"
+        onclick="launchGame('https://fnaecookie.wasmer.app/')"
     >
         <span class="game-letter">F</span>
         <span class="game-name">Five Nights at Epstein</span>
@@ -567,7 +552,7 @@
 
     <button
         class="game-button nzp-button"
-        onclick="launchExternal('https://npcookies.wasmer.app/')"
+        onclick="launchGame('https://npcookies.wasmer.app/')"
     >
         <span class="game-letter">N</span>
         <span class="game-name">NZP</span>
@@ -578,7 +563,7 @@
 
     <button
         class="game-button terraria-button"
-        onclick="location.href='assets/jello/terraria.html'"
+        onclick="launchGame('assets/jello/terraria.html')"
     >
         <span class="game-letter">T</span>
         <span class="game-name">Terraria</span>
@@ -589,7 +574,7 @@
 
     <button
         class="game-button ultimate-button"
-        onclick="launchEaglercraft('assets/jello/portal/ult/index.html')"
+        onclick="launchGame('assets/jello/portal/ult/index.html')"
     >
         <span class="game-letter">U</span>
         <span class="game-name">Ultimate</span>
@@ -600,7 +585,7 @@
 
     <button
         class="game-button webretro-button"
-        onclick="location.href='assets/jello/webretro/index.html'"
+        onclick="launchGame('assets/jello/webretro/index.html')"
     >
         <span class="game-letter">W</span>
         <span class="game-name">WebRetro</span>
@@ -611,7 +596,7 @@
 
     <button
         class="game-button lite-button"
-        onclick="launchEaglercraft('assets/jello/portal/lite/index.html')"
+        onclick="launchGame('assets/jello/portal/lite/index.html')"
     >
         <span class="game-letter">L</span>
         <span class="game-name">Lite</span>
@@ -754,172 +739,13 @@
 </div>
 
 
+<script src="assets/tab-launcher.js"></script>
+
 <script>
-
-    /* =========================
-       GAME LAUNCHER
-    ========================= */
-
-    function launchExternal(externalURL) {
-
-        const gameWindow =
-            window.open("about:blank", "_blank");
-
-
-        if (!gameWindow) {
-
-            alert(
-                "Please allow pop-ups for Sigma Jello."
-            );
-
-            return;
+    function launchGame(gamePath) {
+        if (!openLauncherTab(gamePath)) {
+            alert("Please allow pop-ups for Sigma Jello.");
         }
-
-
-        gameWindow.document.open();
-
-        gameWindow.document.write(`
-
-            <!DOCTYPE html>
-
-            <html>
-
-            <head>
-
-                <title>about:blank</title>
-
-                <style>
-
-                    html,
-                    body {
-
-                        margin: 0;
-                        padding: 0;
-
-                        width: 100%;
-                        height: 100%;
-
-                        overflow: hidden;
-
-                        background: black;
-
-                    }
-
-                    iframe {
-
-                        width: 100%;
-                        height: 100%;
-
-                        border: none;
-
-                        display: block;
-
-                    }
-
-                </style>
-
-            </head>
-
-            <body>
-
-                <iframe
-                    src="${externalURL}"
-                    allowfullscreen>
-                </iframe>
-
-            </body>
-
-            </html>
-
-        `);
-
-        gameWindow.document.close();
-
-    }
-
-
-    function launchEaglercraft(gamePath) {
-
-        const gameWindow =
-            window.open("about:blank", "_blank");
-
-
-        if (!gameWindow) {
-
-            alert(
-                "Please allow pop-ups for Sigma Jello."
-            );
-
-            return;
-        }
-
-
-        const gameURL =
-            new URL(
-                gamePath,
-                window.location.href
-            ).href;
-
-
-        gameWindow.document.open();
-
-        gameWindow.document.write(`
-
-            <!DOCTYPE html>
-
-            <html>
-
-            <head>
-
-                <title>about:blank</title>
-
-                <style>
-
-                    html,
-                    body {
-
-                        margin: 0;
-                        padding: 0;
-
-                        width: 100%;
-                        height: 100%;
-
-                        overflow: hidden;
-
-                        background: black;
-
-                    }
-
-                    iframe {
-
-                        width: 100%;
-                        height: 100%;
-
-                        border: none;
-
-                        display: block;
-
-                    }
-
-                </style>
-
-            </head>
-
-            <body>
-
-                <iframe
-                    src="${gameURL}"
-                    allowfullscreen>
-                </iframe>
-
-            </body>
-
-            </html>
-
-        `);
-
-        gameWindow.document.close();
-
     }
 
 
