@@ -160,7 +160,7 @@
 
         .now-playing-label { color: var(--muted); font-size: .75rem; }
         #now-playing { margin: 4px 0 0; overflow-wrap: anywhere; font-size: .9rem; }
-        .transport { display: flex; justify-content: center; align-items: center; gap: 12px; }
+        .transport { display: flex; justify-content: center; align-items: center; gap: clamp(3px, 1vw, 12px); }
 
         .transport button {
             width: 38px;
@@ -174,6 +174,20 @@
         .transport button:hover:not(:disabled) { background: #282828; }
         .transport #play-pause { background: var(--accent); color: #08160d; }
         .transport #play-pause:hover:not(:disabled) { background: #7bf0a3; }
+
+        .transport .playback-mode {
+            width: auto;
+            padding: 0 8px;
+            border-radius: 20px;
+            color: var(--muted);
+            font-size: .75rem;
+            white-space: nowrap;
+        }
+
+        .transport .playback-mode[aria-pressed="true"], .transport .playback-mode[data-active="true"] {
+            color: var(--accent);
+            background: #18281e;
+        }
 
         .timeline {
             display: grid;
@@ -257,9 +271,11 @@
         </div>
         <div class="player-controls">
             <div class="transport">
+                <button id="shuffle" class="playback-mode" type="button" aria-pressed="false">Shuffle</button>
                 <button id="previous" type="button" aria-label="Previous track" disabled>⏮</button>
                 <button id="play-pause" type="button" aria-label="Play" disabled>▶</button>
                 <button id="next" type="button" aria-label="Next track" disabled>⏭</button>
+                <button id="repeat" class="playback-mode" type="button">Repeat off</button>
             </div>
             <div class="timeline">
                 <span id="elapsed">0:00</span>
@@ -282,6 +298,8 @@
         const previous = document.getElementById("previous");
         const playPause = document.getElementById("play-pause");
         const next = document.getElementById("next");
+        const shuffle = document.getElementById("shuffle");
+        const repeat = document.getElementById("repeat");
         const seek = document.getElementById("seek");
         const elapsed = document.getElementById("elapsed");
         const duration = document.getElementById("duration");
@@ -300,6 +318,10 @@
         const playlists = loadPlaylists();
         let selectedPlaylist = null;
         let playingPlaylist = null;
+        let shuffleEnabled = false;
+        let shuffledTracks = [];
+        const repeatLabels = ["Repeat off", "Repeat all", "Repeat one"];
+        let repeatMode = 0;
         let libraryMessage = "Loading saved tracks…";
         let currentTrack = null;
         let currentURL;
@@ -330,11 +352,29 @@
             return playlist.tracks.map(track => tracks.get(track.id)).filter(Boolean);
         }
 
-        function updateTransport() {
+        function getPlaybackOrder() {
             const playback = getTracks(playingPlaylist);
+            if (!shuffleEnabled) {
+                return playback;
+            }
+            const available = new Set(playback);
+            shuffledTracks = shuffledTracks.filter(track => available.has(track));
+            const queued = new Set(shuffledTracks);
+            const additions = playback.filter(track => !queued.has(track));
+            for (let index = additions.length - 1; index > 0; index--) {
+                const other = Math.floor(Math.random() * (index + 1));
+                [additions[index], additions[other]] = [additions[other], additions[index]];
+            }
+            shuffledTracks.push(...additions);
+            return shuffledTracks;
+        }
+
+        function updateTransport() {
+            const playback = getPlaybackOrder();
             const index = playback.indexOf(currentTrack);
-            previous.disabled = index <= 0;
-            next.disabled = !currentTrack || index >= playback.length - 1;
+            const wrap = repeatMode === 1 && playback.length > 0;
+            previous.disabled = index < 0 || (index === 0 && !wrap);
+            next.disabled = !currentTrack || (index >= playback.length - 1 && !wrap);
             playPause.disabled = !currentTrack && getTracks(selectedPlaylist).length === 0;
             const paused = player.paused || player.ended;
             playPause.textContent = paused ? "▶" : "Ⅱ";
@@ -402,6 +442,7 @@
                 }
                 button.addEventListener("click", () => {
                     playingPlaylist = selectedPlaylist;
+                    shuffledTracks = [track];
                     playTrack(track);
                 });
             } else {
@@ -518,8 +559,15 @@
         });
 
         function skipTrack(offset) {
-            const playback = getTracks(playingPlaylist);
-            const track = playback[playback.indexOf(currentTrack) + offset];
+            const playback = getPlaybackOrder();
+            if (!playback.length) {
+                return;
+            }
+            let index = playback.indexOf(currentTrack) + offset;
+            if (repeatMode === 1) {
+                index = (index + playback.length) % playback.length;
+            }
+            const track = playback[index];
             if (track) {
                 playTrack(track);
             }
@@ -527,11 +575,24 @@
 
         previous.addEventListener("click", () => skipTrack(-1));
         next.addEventListener("click", () => skipTrack(1));
+        shuffle.addEventListener("click", () => {
+            shuffleEnabled = !shuffleEnabled;
+            shuffledTracks = currentTrack ? [currentTrack] : [];
+            shuffle.setAttribute("aria-pressed", String(shuffleEnabled));
+            updateTransport();
+        });
+        repeat.addEventListener("click", () => {
+            repeatMode = (repeatMode + 1) % repeatLabels.length;
+            repeat.textContent = repeatLabels[repeatMode];
+            repeat.dataset.active = String(repeatMode !== 0);
+            updateTransport();
+        });
         playPause.addEventListener("click", () => {
             if (!currentTrack) {
-                const firstTrack = getTracks(selectedPlaylist)[0];
+                playingPlaylist = selectedPlaylist;
+                shuffledTracks = [];
+                const firstTrack = getPlaybackOrder()[0];
                 if (firstTrack) {
-                    playingPlaylist = selectedPlaylist;
                     playTrack(firstTrack);
                 }
             } else if (player.paused || player.ended) {
@@ -554,7 +615,12 @@
         player.addEventListener("durationchange", updateTimeline);
         player.addEventListener("ended", () => {
             updateTransport();
-            skipTrack(1);
+            if (repeatMode === 2 && currentTrack) {
+                player.currentTime = 0;
+                startPlayback();
+            } else {
+                skipTrack(1);
+            }
         });
 
         function showLibraryError() {
