@@ -1799,6 +1799,11 @@
 
     function openJelloMusic() {
 
+        if (quickNewJelloMusic.checked) {
+            window.location.assign("new-jello-music.html");
+            return;
+        }
+
         const musicWindow =
             window.open(
                 "about:blank",
@@ -1818,7 +1823,7 @@
 
         const musicURL =
             new URL(
-                quickNewJelloMusic.checked ? "new-jello-music.html" : "music.html",
+                "music.html",
                 window.location.href
             ).href;
 
