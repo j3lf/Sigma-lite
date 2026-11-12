@@ -1,13 +1,8 @@
-function openLauncherTab(pagePath) {
-    const launcherTab = window.open("about:blank", "_blank");
-    if (!launcherTab) {
-        return false;
-    }
-
+function applyLauncherTabSettings(tabDocument) {
     const driveIcon = "https://ssl.gstatic.com/docs/doclist/images/infinite_arrow_favicon_5.ico";
     const tabIcon = localStorage.getItem("tabIcon");
-    const tabDocument = launcherTab.document;
     tabDocument.title = localStorage.getItem("tabName") || "about:blank";
+    tabDocument.head.querySelectorAll('link[rel~="icon"]').forEach(icon => icon.remove());
 
     if (tabIcon === "drive" || tabIcon === driveIcon) {
         const icon = tabDocument.createElement("link");
@@ -15,6 +10,16 @@ function openLauncherTab(pagePath) {
         icon.href = driveIcon;
         tabDocument.head.appendChild(icon);
     }
+}
+
+function openLauncherTab(pagePath) {
+    const launcherTab = window.open("about:blank", "_blank");
+    if (!launcherTab) {
+        return false;
+    }
+
+    const tabDocument = launcherTab.document;
+    applyLauncherTabSettings(tabDocument);
 
     const style = tabDocument.createElement("style");
     style.textContent = `
