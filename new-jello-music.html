@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>New Jello Music</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --panel: #121212;
+            --muted: #b3b3b3;
+            --accent: #50e484;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            display: grid;
+            grid-template-columns: minmax(210px, 270px) minmax(0, 1fr);
+            grid-template-rows: minmax(0, 1fr) auto;
+            gap: 8px;
+            height: 100dvh;
+            margin: 0;
+            padding: 8px;
+            background: #080808;
+            color: #fafafa;
+            font-family: Inter, "Segoe UI", sans-serif;
+        }
+
+        a { color: inherit; }
+        button, input { font: inherit; }
+        button { cursor: pointer; }
+        button:disabled { cursor: default; opacity: .4; }
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+        .library, main {
+            min-height: 0;
+            overflow: auto;
+            border-radius: 10px;
+            background: var(--panel);
+        }
+
+        .library { padding: 24px 20px; }
+        .home-link { color: var(--muted); font-size: .875rem; text-decoration: none; }
+        .home-link:hover { color: white; }
+        .library h2 { margin: 28px 0 6px; font-size: 1.1rem; }
+        .track-count, #queue-message { color: var(--muted); font-size: .875rem; }
+        .track-count { margin: 0 0 22px; }
+
+        #audio-files {
+            width: 100%;
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        #audio-files::file-selector-button {
+            display: block;
+            margin: 0 0 8px;
+            padding: 9px 15px;
+            border: 0;
+            border-radius: 100px;
+            background: #303030;
+            color: white;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 650;
+        }
+
+        .hero {
+            display: flex;
+            align-items: flex-end;
+            gap: clamp(16px, 3vw, 32px);
+            padding: clamp(20px, 4vw, 48px);
+            background: linear-gradient(135deg, #354b67, #192432 70%, var(--panel));
+        }
+
+        .cover {
+            display: block;
+            width: clamp(70px, 19vw, 192px);
+            aspect-ratio: 1;
+            border-radius: 6px;
+            object-fit: cover;
+            box-shadow: 0 12px 30px #0008;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(1.7rem, 5.5vw, 5rem);
+            line-height: 1;
+            letter-spacing: -.045em;
+        }
+
+        .queue-section { padding: 12px clamp(16px, 4vw, 48px) 32px; }
+        .queue-section h2 { margin: 8px 0 18px; font-size: 1.25rem; }
+        #queue-message:empty { display: none; }
+        #queue { padding-left: 2rem; }
+        #queue li { padding-left: 8px; }
+        #queue li::marker { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+        .track {
+            width: 100%;
+            padding: 12px;
+            border: 0;
+            border-bottom: 1px solid #282828;
+            border-radius: 4px;
+            background: transparent;
+            color: inherit;
+            font-weight: 600;
+            text-align: left;
+            overflow-wrap: anywhere;
+        }
+
+        .track:hover, .track[aria-current="true"] { background: #252525; }
+        .track[aria-current="true"] { color: var(--accent); }
+
+        .player-bar {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(220px, 2fr) minmax(0, 1fr);
+            align-items: center;
+            gap: 16px;
+            padding: 10px 16px;
+        }
+
+        .now-playing-label { color: var(--muted); font-size: .75rem; }
+        #now-playing { margin: 4px 0 0; overflow-wrap: anywhere; font-size: .9rem; }
+        .transport { display: flex; justify-content: center; align-items: center; gap: 12px; }
+
+        .transport button {
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            color: white;
+        }
+
+        .transport button:hover:not(:disabled) { background: #282828; }
+        .transport #play-pause { background: var(--accent); color: #08160d; }
+        .transport #play-pause:hover:not(:disabled) { background: #7bf0a3; }
+
+        .timeline {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: .75rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent); }
+        .volume { display: flex; align-items: center; gap: 8px; justify-self: end; font-size: .8rem; }
+        .volume input { width: clamp(50px, 8vw, 110px); }
+
+        @media (max-width: 640px) {
+            body {
+                grid-template-columns: minmax(0, 1fr);
+                grid-template-rows: auto minmax(0, 1fr) auto;
+            }
+
+            .library { padding: 12px 16px; }
+            .library h2 { display: inline-block; margin: 0 8px 0 16px; }
+            .track-count { display: inline-block; margin: 0; }
+            .file-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 10px; }
+            #audio-files { width: min(100%, 225px); margin: 0; }
+            #audio-files::file-selector-button { display: inline-block; margin: 0 8px 0 0; }
+            .player-bar { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; padding: 6px 8px; }
+            .player-controls { grid-row: 2; grid-column: 1 / -1; }
+            .volume { grid-column: 2; grid-row: 1; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="library" aria-label="Library">
+        <a class="home-link" href="index.html">← Back to Jello</a>
+        <h2>Your Library</h2>
+        <p class="track-count" id="track-count">0 tracks</p>
+        <div class="file-picker">
+            <label for="audio-files">Add session tracks</label>
+            <input id="audio-files" type="file" accept="audio/*,.mp3,.m4a,.ogg,.wav,.flac" multiple>
+        </div>
+    </aside>
+
+    <main>
+        <header class="hero">
+            <img class="cover" src="assets/backroundjello.png" alt="">
+            <h1>New Jello Music</h1>
+        </header>
+        <section class="queue-section" aria-labelledby="queue-heading">
+            <h2 id="queue-heading">Queue</h2>
+            <p id="queue-message" role="status">Loading saved tracks…</p>
+            <ol id="queue"></ol>
+        </section>
+    </main>
+
+    <footer class="player-bar" aria-label="Playback">
+        <div>
+            <span class="now-playing-label">Now playing</span>
+            <p id="now-playing" aria-live="polite">Select a track</p>
+        </div>
+        <div class="player-controls">
+            <div class="transport">
+                <button id="previous" type="button" aria-label="Previous track" disabled>⏮</button>
+                <button id="play-pause" type="button" aria-label="Play" disabled>▶</button>
+                <button id="next" type="button" aria-label="Next track" disabled>⏭</button>
+            </div>
+            <div class="timeline">
+                <span id="elapsed">0:00</span>
+                <input id="seek" type="range" min="0" max="0" step="0.1" value="0" aria-label="Seek" disabled>
+                <span id="duration">0:00</span>
+            </div>
+        </div>
+        <label class="volume">Volume
+            <input id="volume" type="range" min="0" max="1" step="0.01" value="1">
+        </label>
+        <audio id="player" preload="metadata"></audio>
+    </footer>
+    <script>
+        const player = document.getElementById("player");
+        const nowPlaying = document.getElementById("now-playing");
+        const queue = document.getElementById("queue");
+        const queueMessage = document.getElementById("queue-message");
+        const files = document.getElementById("audio-files");
+        const trackCount = document.getElementById("track-count");
+        const previous = document.getElementById("previous");
+        const playPause = document.getElementById("play-pause");
+        const next = document.getElementById("next");
+        const seek = document.getElementById("seek");
+        const elapsed = document.getElementById("elapsed");
+        const duration = document.getElementById("duration");
+        const volume = document.getElementById("volume");
+        const tracks = [];
+        let currentTrack = null;
+        let currentURL;
+
+        function updateTransport() {
+            const index = tracks.indexOf(currentTrack);
+            previous.disabled = index <= 0;
+            next.disabled = index < 0 || index === tracks.length - 1;
+            playPause.disabled = tracks.length === 0;
+            const paused = player.paused || player.ended;
+            playPause.textContent = paused ? "▶" : "Ⅱ";
+            playPause.setAttribute("aria-label", paused ? "Play" : "Pause");
+        }
+
+        function formatTime(seconds) {
+            const wholeSeconds = Math.floor(seconds);
+            return Math.floor(wholeSeconds / 60) + ":" + String(wholeSeconds % 60).padStart(2, "0");
+        }
+
+        function updateTimeline() {
+            const length = Number.isFinite(player.duration) ? player.duration : 0;
+            seek.disabled = length === 0;
+            seek.max = length;
+            seek.value = player.currentTime;
+            elapsed.textContent = formatTime(player.currentTime);
+            duration.textContent = formatTime(length);
+        }
+
+        function startPlayback() {
+            const track = currentTrack;
+            nowPlaying.textContent = track.name;
+            player.play().catch(error => {
+                if (currentTrack === track && error.name !== "AbortError") {
+                    nowPlaying.textContent = "Unable to play " + track.name;
+                }
+            });
+        }
+
+        function playTrack(track) {
+            currentTrack?.button.removeAttribute("aria-current");
+            currentTrack = track;
+            track.button.setAttribute("aria-current", "true");
+
+            const previousURL = currentURL;
+            currentURL = URL.createObjectURL(track.blob);
+            player.src = currentURL;
+            if (previousURL) {
+                URL.revokeObjectURL(previousURL);
+            }
+            updateTransport();
+            updateTimeline();
+            startPlayback();
+        }
+
+        function addTrack(name, blob) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "track";
+            button.textContent = name;
+            const track = { name, blob, button };
+            button.addEventListener("click", () => playTrack(track));
+
+            const item = document.createElement("li");
+            item.appendChild(button);
+            queue.appendChild(item);
+            tracks.push(track);
+            trackCount.textContent = tracks.length + (tracks.length === 1 ? " track" : " tracks");
+            updateTransport();
+        }
+
+        files.addEventListener("change", () => {
+            for (const file of files.files) {
+                addTrack(file.name, file);
+            }
+            files.value = "";
+            if (tracks.length) {
+                queueMessage.textContent = "";
+            }
+        });
+
+        function skipTrack(offset) {
+            const track = tracks[tracks.indexOf(currentTrack) + offset];
+            if (track) {
+                playTrack(track);
+            }
+        }
+
+        previous.addEventListener("click", () => skipTrack(-1));
+        next.addEventListener("click", () => skipTrack(1));
+        playPause.addEventListener("click", () => {
+            if (!currentTrack) {
+                playTrack(tracks[0]);
+            } else if (player.paused || player.ended) {
+                startPlayback();
+            } else {
+                player.pause();
+            }
+        });
+
+        seek.addEventListener("input", () => {
+            player.currentTime = Number(seek.value);
+        });
+        volume.addEventListener("input", () => {
+            player.volume = Number(volume.value);
+        });
+
+        player.addEventListener("play", updateTransport);
+        player.addEventListener("pause", updateTransport);
+        player.addEventListener("timeupdate", updateTimeline);
+        player.addEventListener("durationchange", updateTimeline);
+        player.addEventListener("ended", () => {
+            updateTransport();
+            skipTrack(1);
+        });
+
+        function showLibraryError() {
+            queueMessage.textContent = "Saved tracks are unavailable. You can still add audio files.";
+        }
+
+        // Read the tracks imported by the original Jello Music player.
+        function loadSavedTracks() {
+            let libraryMissing = false;
+            const request = indexedDB.open("JelloMusicDatabase");
+            request.onupgradeneeded = () => {
+                libraryMissing = true;
+                request.transaction.abort();
+            };
+            request.onerror = () => {
+                if (libraryMissing) {
+                    showEmptyQueue();
+                } else {
+                    showLibraryError();
+                }
+            };
+            request.onsuccess = () => {
+                const database = request.result;
+                if (!database.objectStoreNames.contains("mp3Files")) {
+                    database.close();
+                    showEmptyQueue();
+                    return;
+                }
+
+                const transaction = database.transaction("mp3Files", "readonly");
+                const library = transaction.objectStore("mp3Files").getAll();
+                library.onsuccess = () => {
+                    for (const { name, blob } of library.result) {
+                        addTrack(name, blob);
+                    }
+                    showEmptyQueue();
+                };
+                transaction.onerror = showLibraryError;
+                database.close();
+            };
+        }
+
+        function showEmptyQueue() {
+            queueMessage.textContent = tracks.length ? "" : "Add audio files to start listening.";
+        }
+
+        if (window.indexedDB) {
+            loadSavedTracks();
+        } else {
+            showLibraryError();
+        }
+    </script>
+</body>
+</html>

@@ -1646,6 +1646,18 @@
         </div>
 
 
+        <div class="quick-setting">
+
+            <label for="quickNewJelloMusic">New Jello Music</label>
+
+            <label class="switch">
+                <input type="checkbox" id="quickNewJelloMusic">
+                <span class="slider"></span>
+            </label>
+
+        </div>
+
+
         <!-- JELLO MUSIC -->
 
         <button
@@ -1779,6 +1791,12 @@
        JELLO MUSIC
        ========================= */
 
+    const quickNewJelloMusic = document.getElementById("quickNewJelloMusic");
+    quickNewJelloMusic.checked = localStorage.getItem("newJelloMusic") === "true";
+    quickNewJelloMusic.addEventListener("change", function() {
+        localStorage.setItem("newJelloMusic", String(quickNewJelloMusic.checked));
+    });
+
     function openJelloMusic() {
 
         const musicWindow =
@@ -1800,7 +1818,7 @@
 
         const musicURL =
             new URL(
-                "music.html",
+                quickNewJelloMusic.checked ? "new-jello-music.html" : "music.html",
                 window.location.href
             ).href;
 
