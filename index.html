@@ -1125,7 +1125,7 @@
 
         <button
             class="circle-button music-button"
-            onclick="openJelloMusic()"
+            onclick="navigateWithinJello('music.html')"
         >
 
             <span class="icon">
@@ -1291,7 +1291,7 @@
 
         <button
             class="circle-button portal-button"
-            onclick="launchJelloPortal()"
+            onclick="navigateWithinJello('jelloportal.html')"
         >
 
             <span class="icon">
@@ -1378,7 +1378,7 @@
      ========================= -->
 
 <div class="version">
-    5.0.3 Beta r2
+    5.0.4 Beta
 </div>
 
 
@@ -1647,35 +1647,11 @@
         </div>
 
 
-        <div class="quick-setting">
-
-            <label for="quickNewJelloMusic">New Jello Music</label>
-
-            <label class="switch">
-                <input type="checkbox" id="quickNewJelloMusic">
-                <span class="slider"></span>
-            </label>
-
-        </div>
-
-
-        <div class="quick-setting">
-
-            <label for="quickBetaMode">Beta Mode</label>
-
-            <label class="switch">
-                <input type="checkbox" id="quickBetaMode">
-                <span class="slider"></span>
-            </label>
-
-        </div>
-
-
         <!-- JELLO MUSIC -->
 
         <button
             class="music-open-button"
-            onclick="openJelloMusic()"
+            onclick="navigateWithinJello('music.html')"
         >
             Jello Music
         </button>
@@ -1692,21 +1668,6 @@
 
 <script src="assets/settings.js"></script>
 <script>
-    const quickBetaMode = document.getElementById("quickBetaMode");
-    quickBetaMode.checked = localStorage.getItem("betaMode") === "true";
-    quickBetaMode.addEventListener("change", function() {
-        localStorage.setItem("betaMode", String(quickBetaMode.checked));
-    });
-
-    function launchJelloPortal() {
-        if (!quickBetaMode.checked) {
-            alert("This feature will be back soon.");
-            return;
-        }
-
-        navigateWithinJello("jelloportal.html");
-    }
-
     /* =========================
        ELEMENTS
        ========================= */
@@ -1810,109 +1771,6 @@
     /* =========================
        JELLO MUSIC
        ========================= */
-
-    const quickNewJelloMusic = document.getElementById("quickNewJelloMusic");
-    quickNewJelloMusic.checked = localStorage.getItem("newJelloMusic") === "true";
-    quickNewJelloMusic.addEventListener("change", function() {
-        localStorage.setItem("newJelloMusic", String(quickNewJelloMusic.checked));
-    });
-
-    function openJelloMusic() {
-
-        if (quickNewJelloMusic.checked) {
-            navigateWithinJello("new-jello-music.html");
-            return;
-        }
-
-        const musicWindow =
-            window.open(
-                "about:blank",
-                "_blank"
-            );
-
-        if (!musicWindow) {
-
-            alert(
-                "Please allow pop-ups for Sigma Jello."
-            );
-
-            return;
-
-        }
-
-
-        const musicURL =
-            new URL(
-                "music.html",
-                window.location.href
-            ).href;
-
-
-        musicWindow.document.open();
-
-
-        musicWindow.document.write(`
-
-            <!DOCTYPE html>
-
-            <html>
-
-            <head>
-
-                <title>
-                    about:blank
-                </title>
-
-                <style>
-
-                    html,
-                    body {
-
-                        margin: 0;
-                        padding: 0;
-
-                        width: 100%;
-                        height: 100%;
-
-                        overflow: hidden;
-
-                        background: black;
-
-                    }
-
-                    iframe {
-
-                        width: 100%;
-                        height: 100%;
-
-                        border: none;
-
-                        display: block;
-
-                    }
-
-                </style>
-
-            </head>
-
-            <body>
-
-                <iframe
-                    src="${musicURL}"
-                    allowfullscreen>
-                </iframe>
-
-            </body>
-
-            </html>
-
-        `);
-
-
-        musicWindow.document.close();
-
-    }
-
 
     /* =========================
        LOGIN

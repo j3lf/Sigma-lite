@@ -17,6 +17,10 @@ function navigateWithinJello(pagePath, event) {
         event.preventDefault();
     }
 
+    withoutNoTabClose(() => window.location.assign(pagePath));
+}
+
+function withoutNoTabClose(navigate) {
     const previousHandler = window.onbeforeunload;
     const restore = () => {
         window.onbeforeunload = previousHandler;
@@ -24,7 +28,7 @@ function navigateWithinJello(pagePath, event) {
     window.onbeforeunload = null;
     window.addEventListener("pageshow", restore, { once: true });
     try {
-        window.location.assign(pagePath);
+        navigate();
     } catch (error) {
         window.removeEventListener("pageshow", restore);
         restore();
