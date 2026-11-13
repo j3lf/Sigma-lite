@@ -1690,8 +1690,6 @@
 </div>
 
 
-<script src="assets/tab-launcher.js"></script>
-
 <script>
     const quickBetaMode = document.getElementById("quickBetaMode");
     quickBetaMode.checked = localStorage.getItem("betaMode") === "true";
@@ -1705,9 +1703,7 @@
             return;
         }
 
-        if (!openLauncherTab("jelloportal.html")) {
-            alert("Please allow pop-ups for Sigma Jello.");
-        }
+        window.location.assign("jelloportal.html");
     }
 
     /* =========================
