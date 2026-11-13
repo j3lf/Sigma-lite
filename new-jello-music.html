@@ -224,7 +224,7 @@
 </head>
 <body>
     <aside class="library" aria-label="Library">
-        <a class="home-link" href="index.html">← Back to Jello</a>
+        <a class="home-link" href="index.html" onclick="navigateWithinJello(this.href, event)">← Back to Jello</a>
         <h2>Your Library</h2>
         <p class="track-count" id="track-count">0 tracks</p>
         <div class="file-picker">
@@ -290,6 +290,10 @@
     </footer>
     <script src="assets/settings.js"></script>
     <script>
+        if (localStorage.getItem("noTabClose") === "true") {
+            enableSavedNoTabClose();
+        }
+
         const player = document.getElementById("player");
         const nowPlaying = document.getElementById("now-playing");
         const queue = document.getElementById("queue");

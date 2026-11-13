@@ -1323,6 +1323,7 @@
 
     </div>
 
+    <script src="assets/settings.js"></script>
     <script>
 
         /* =========================
@@ -1341,9 +1342,7 @@
 
         function goBackToSigma() {
 
-            window.location.assign(
-                getSigmaHomeURL()
-            );
+            navigateWithinJello(getSigmaHomeURL());
 
         }
 

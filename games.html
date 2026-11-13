@@ -623,7 +623,7 @@
 
 <button
     class="back-button"
-    onclick="location.href='index.html'"
+    onclick="navigateWithinJello('index.html')"
 >
     <span class="back-letter">←</span>
     <span class="back-text">Back</span>
@@ -755,6 +755,7 @@
 
 <script src="assets/tab-launcher.js"></script>
 
+<script src="assets/settings.js"></script>
 <script>
     function launchGame(gamePath) {
         if (!openLauncherTab(gamePath)) {

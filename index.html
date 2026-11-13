@@ -1098,7 +1098,7 @@
 
         <button
             class="circle-button games-button"
-            onclick="location.href='games.html'"
+            onclick="navigateWithinJello('games.html')"
         >
 
             <span class="icon">
@@ -1178,7 +1178,7 @@
 
         <button
             class="circle-button changelog-button"
-            onclick="location.href='changelogs.html'"
+            onclick="navigateWithinJello('changelogs.html')"
         >
 
             <span class="icon">
@@ -1228,7 +1228,7 @@
 
         <button
             class="circle-button settings-button"
-            onclick="location.href='settings.html'"
+            onclick="navigateWithinJello('settings.html')"
         >
 
             <span class="icon">
@@ -1690,6 +1690,7 @@
 </div>
 
 
+<script src="assets/settings.js"></script>
 <script>
     const quickBetaMode = document.getElementById("quickBetaMode");
     quickBetaMode.checked = localStorage.getItem("betaMode") === "true";
@@ -1703,7 +1704,7 @@
             return;
         }
 
-        window.location.assign("jelloportal.html");
+        navigateWithinJello("jelloportal.html");
     }
 
     /* =========================
@@ -1819,7 +1820,7 @@
     function openJelloMusic() {
 
         if (quickNewJelloMusic.checked) {
-            window.location.assign("new-jello-music.html");
+            navigateWithinJello("new-jello-music.html");
             return;
         }
 
