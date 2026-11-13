@@ -137,15 +137,12 @@
         width: 130px;
     }
 
-    .ultimate-button:hover {
-        width: 150px;
-    }
-
     .webretro-button:hover {
         width: 180px;
     }
 
-    .lite-button:hover {
+    .lite-button:hover,
+    .portal-game-button:hover {
         width: 120px;
     }
 
@@ -570,14 +567,31 @@
     </button>
 
 
-    <!-- Ultimate -->
+    <button
+        class="game-button portal-game-button"
+        aria-label="Tech"
+        onclick="launchGame('assets/jello/portal/tech/index.html')"
+    >
+        <span class="game-letter">T</span>
+        <span class="game-name">Tech</span>
+    </button>
 
     <button
-        class="game-button ultimate-button"
-        onclick="launchGame('assets/jello/portal/ult/index.html')"
+        class="game-button portal-game-button"
+        aria-label="1.6"
+        onclick="launchGame('assets/jello/portal/van/index.html')"
     >
-        <span class="game-letter">U</span>
-        <span class="game-name">Ultimate</span>
+        <span class="game-letter">1.6</span>
+        <span class="game-name">1.6</span>
+    </button>
+
+    <button
+        class="game-button portal-game-button"
+        aria-label="Magic"
+        onclick="launchGame('assets/jello/portal/magic/index.html')"
+    >
+        <span class="game-letter">M</span>
+        <span class="game-name">Magic</span>
     </button>
 
 
