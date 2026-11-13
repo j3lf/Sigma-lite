@@ -3,7 +3,6 @@
 <head>
 
     <title>Jello Portal</title>
-    <meta name="jello-chat-api" content="">
 
     <style>
 
@@ -291,13 +290,6 @@
 
             margin: auto;
 
-            display: grid;
-
-            grid-template-columns:
-                1fr 1fr;
-
-            gap: 25px;
-
             text-align: left;
         }
 
@@ -509,62 +501,101 @@
 
 
         /* =========================
-           SERVER LIST
+           BACK BUTTON
            ========================= */
 
-        .server-list {
+        .back-button {
 
-            display: flex;
+            position: fixed;
 
-            flex-direction: column;
+            bottom: 20px;
+            left: 20px;
 
-            gap: 12px;
-        }
+            width: 58px;
+            height: 58px;
 
+            padding: 0;
 
-        .server {
+            border: none;
 
-            padding: 16px;
-
-            border:
-                1px solid
-                rgba(255, 255, 255, 0.1);
-
-            border-radius: 9px;
+            border-radius: 50%;
 
             background:
-                rgba(255, 255, 255, 0.045);
+                rgba(255, 255, 255, 0.96);
 
-            transition:
-                background 0.15s ease,
-                transform 0.15s ease;
-        }
+            color: #222;
 
+            cursor: pointer;
 
-        .server:hover {
-
-            background:
-                rgba(255, 255, 255, 0.08);
-
-            transform:
-                translateY(-2px);
-        }
-
-
-        .server-top {
+            z-index: 100;
 
             display: flex;
-
-            justify-content:
-                space-between;
 
             align-items: center;
 
-            gap: 10px;
+            justify-content: center;
+
+            overflow: hidden;
+
+            white-space: nowrap;
+
+            box-shadow:
+                0 5px 18px
+                rgba(0, 0, 0, 0.25);
+
+            transition:
+                width 0.25s ease,
+                transform 0.2s ease,
+                border-radius 0.25s ease;
         }
 
 
-        .server-name {
+        .back-button:hover {
+
+            width: 120px;
+
+            transform:
+                scale(1.08);
+
+            border-radius: 35px;
+
+            background: white;
+        }
+
+
+        .back-icon {
+
+            width: 32px;
+            height: 32px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .back-icon svg {
+
+            width: 30px;
+            height: 30px;
+
+            fill: none;
+
+            stroke: #222;
+
+            stroke-width: 2.5;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+        }
+
+
+        .back-button .back-name {
+
+            display: none;
 
             font-size: 17px;
 
@@ -572,55 +603,15 @@
         }
 
 
-        .server-version {
+        .back-button:hover .back-icon {
 
-            font-size: 12px;
-
-            color:
-                rgba(255, 255, 255, 0.5);
-
-            margin-top: 3px;
+            display: none;
         }
 
 
-        .server-ip {
+        .back-button:hover .back-name {
 
-            margin-top: 8px;
-
-            font-family: monospace;
-
-            font-size: 14px;
-
-            color:
-                rgba(255, 255, 255, 0.75);
-        }
-
-
-        .copy-button {
-
-            border: none;
-
-            border-radius: 6px;
-
-            padding:
-                7px 11px;
-
-            background:
-                rgba(255, 255, 255, 0.12);
-
-            color: white;
-
-            cursor: pointer;
-
-            transition:
-                background 0.15s ease;
-        }
-
-
-        .copy-button:hover {
-
-            background:
-                rgba(255, 255, 255, 0.22);
+            display: block;
         }
 
 
@@ -997,12 +988,6 @@
                 font-size: 45px;
             }
 
-            .portal-grid {
-
-                grid-template-columns:
-                    1fr;
-            }
-
         }
 
     </style>
@@ -1030,7 +1015,7 @@
         </h1>
 
         <p class="subtitle">
-            Chat with other players and find Minecraft servers
+            Chat with other players
         </p>
 
 
@@ -1129,7 +1114,6 @@
                     <button
                         class="send-button"
                         id="sendButton"
-                        disabled
                     >
                         Send
                     </button>
@@ -1148,127 +1132,44 @@
             </div>
 
 
-            <!-- MINECRAFT SERVERS -->
-
-            <div class="panel">
-
-                <h2 class="panel-title">
-                    🎮 Minecraft Servers
-                </h2>
-
-
-                <div class="server-list">
-
-
-                    <!-- sigma -->
-
-                    <div class="server">
-
-                        <div class="server-top">
-
-                            <div>
-
-                                <div class="server-name">
-                                    Sigma Smp
-                                </div>
-
-                                <div class="server-version">
-                                    EaglerCraft
-                                </div>
-
-                            </div>
-
-                            <button
-                                class="copy-button"
-                                onclick="copyIP('java://sigmajello112.aternos.me', this)"
-                            >
-                                Copy
-                            </button>
-
-                        </div>
-
-                        <div class="server-ip">
-                            sigmajello112.aternos.me
-                        </div>
-
-                    </div>
-
-
-                    <!-- ZENTIC -->
-
-                    <div class="server">
-
-                        <div class="server-top">
-
-                            <div>
-
-                                <div class="server-name">
-                                    Zentic
-                                </div>
-
-                                <div class="server-version">
-                                    EaglerCraft
-                                </div>
-
-                            </div>
-
-                            <button
-                                class="copy-button"
-                                onclick="copyIP('wss://zentic.cc', this)"
-                            >
-                                Copy
-                            </button>
-
-                        </div>
-
-                        <div class="server-ip">
-                            wss://zentic.cc
-                        </div>
-
-                    </div>
-
-
-                    <!-- TUFF -->
-
-                    <div class="server">
-
-                        <div class="server-top">
-
-                            <div>
-
-                                <div class="server-name">
-                                    Tuff
-                                </div>
-
-                                <div class="server-version">
-                                    EaglerCraft
-                                </div>
-
-                            </div>
-
-                            <button
-                                class="copy-button"
-                                onclick="copyIP('wss://tuff.ws', this)"
-                            >
-                                Copy
-                            </button>
-
-                        </div>
-
-                        <div class="server-ip">
-                            wss://tuff.ws
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </div>
 
         </div>
 
     </div>
+
+
+    <!-- BACK BUTTON -->
+
+    <button
+        class="back-button"
+        aria-label="Back to Jello"
+        onclick="navigateWithinJello('index.html')"
+    >
+
+        <span class="back-icon">
+
+            <svg
+                viewBox="0 0 48 48"
+                aria-hidden="true"
+            >
+
+                <path
+                    d="M30 10L16 24L30 38"
+                />
+
+                <path
+                    d="M17 24H38"
+                />
+
+            </svg>
+
+        </span>
+
+        <span class="back-name">
+            Back
+        </span>
+
+    </button>
 
 
     <!-- VERSION -->
@@ -1433,13 +1334,612 @@
     </div>
 
 
-    <script src="assets/jello-chat.js"></script>
+    <!-- =========================
+         FIREBASE
+         ========================= -->
+
+    <script type="module">
+
+        import {
+            initializeApp
+        } from
+        "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+        import {
+            getDatabase,
+            ref,
+            push,
+            onChildAdded,
+            set,
+            onValue,
+            onDisconnect,
+            serverTimestamp,
+            remove
+        } from
+        "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+
+        const firebaseConfig = {
+
+            apiKey:
+                "AIzaSyAIZJ7mReibw8J48F6yRut7GQAqWMalN-E",
+
+            authDomain:
+                "sigma-jello.firebaseapp.com",
+
+            databaseURL:
+                "https://sigma-jello-default-rtdb.firebaseio.com",
+
+            projectId:
+                "sigma-jello",
+
+            storageBucket:
+                "sigma-jello.firebasestorage.app",
+
+            messagingSenderId:
+                "643520880930",
+
+            appId:
+                "1:643520880930:web:2d06c3244f500be039c57b"
+
+        };
+
+
+        /* =========================
+           FIREBASE START
+           ========================= */
+
+        let database;
+
+        try {
+
+            const app =
+                initializeApp(firebaseConfig);
+
+            database =
+                getDatabase(app);
+
+        } catch (error) {
+
+            console.error(
+                "Firebase initialization failed:",
+                error
+            );
+
+        }
+
+
+        /* =========================
+           USERNAME
+           ========================= */
+
+        function getUsername() {
+
+            return (
+                localStorage.getItem(
+                    "sigmaJelloUsername"
+                ) || "Guest"
+            );
+
+        }
+
+
+        /* =========================
+           CHAT
+           ========================= */
+
+        const chatInput =
+            document.getElementById(
+                "chatInput"
+            );
+
+        const chatMessages =
+            document.getElementById(
+                "chatMessages"
+            );
+
+        const chatStatus =
+            document.getElementById(
+                "chatStatus"
+            );
+
+        const sendButton =
+            document.getElementById(
+                "sendButton"
+            );
+
+
+        function formatTime(timestamp) {
+
+            if (!timestamp) {
+                return "";
+            }
+
+            return new Date(
+                timestamp
+            ).toLocaleTimeString(
+                [],
+                {
+                    hour: "numeric",
+                    minute: "2-digit"
+                }
+            );
+
+        }
+
+
+        async function sendMessage() {
+
+            const text =
+                chatInput.value.trim();
+
+            if (!text) {
+                return;
+            }
+
+            if (!database) {
+
+                chatStatus.textContent =
+                    "Chat connection failed.";
+
+                return;
+
+            }
+
+
+            try {
+
+                await push(
+                    ref(
+                        database,
+                        "jelloChat"
+                    ),
+                    {
+
+                        username:
+                            getUsername(),
+
+                        message:
+                            text,
+
+                        timestamp:
+                            Date.now()
+
+                    }
+                );
+
+                chatInput.value = "";
+
+            } catch (error) {
+
+                console.error(
+                    "Firebase send error:",
+                    error
+                );
+
+                chatStatus.textContent =
+                    "Could not send message.";
+
+            }
+
+        }
+
+
+        sendButton.addEventListener(
+            "click",
+            sendMessage
+        );
+
+
+        chatInput.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    sendMessage();
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           FIREBASE CHAT LISTENER
+           ========================= */
+
+        if (database) {
+
+            const chatRef =
+                ref(
+                    database,
+                    "jelloChat"
+                );
+
+
+            const TWELVE_HOURS =
+                12 * 60 * 60 * 1000;
+
+
+            onChildAdded(
+
+                chatRef,
+
+                async function(snapshot) {
+
+                    const data =
+                        snapshot.val();
+
+                    if (!data) {
+                        return;
+                    }
+
+
+                    const messageTime =
+                        Number(
+                            data.timestamp
+                        ) || 0;
+
+
+                    if (
+                        messageTime <
+                        Date.now() -
+                        TWELVE_HOURS
+                    ) {
+
+                        try {
+
+                            await remove(
+                                snapshot.ref
+                            );
+
+                        } catch (error) {
+
+                            console.error(
+                                "Could not remove old message:",
+                                error
+                            );
+
+                        }
+
+                        return;
+
+                    }
+
+
+                    const connecting =
+                        document.getElementById(
+                            "connectingMessage"
+                        );
+
+
+                    if (connecting) {
+                        connecting.remove();
+                    }
+
+
+                    const message =
+                        document.createElement(
+                            "div"
+                        );
+
+                    message.className =
+                        "message";
+
+
+                    const header =
+                        document.createElement(
+                            "div"
+                        );
+
+                    header.className =
+                        "message-header";
+
+
+                    const name =
+                        document.createElement(
+                            "div"
+                        );
+
+                    name.className =
+                        "message-name";
+
+                    name.textContent =
+                        data.username ||
+                        "Guest";
+
+
+                    const time =
+                        document.createElement(
+                            "div"
+                        );
+
+                    time.className =
+                        "message-time";
+
+                    time.textContent =
+                        formatTime(
+                            data.timestamp
+                        );
+
+
+                    const messageText =
+                        document.createElement(
+                            "div"
+                        );
+
+                    messageText.className =
+                        "message-text";
+
+                    messageText.textContent =
+                        data.message || "";
+
+
+                    header.appendChild(name);
+                    header.appendChild(time);
+
+                    message.appendChild(header);
+                    message.appendChild(messageText);
+
+                    chatMessages.appendChild(
+                        message
+                    );
+
+
+                    chatMessages.scrollTop =
+                        chatMessages.scrollHeight;
+
+                },
+
+                function(error) {
+
+                    console.error(
+                        "Firebase read error:",
+                        error
+                    );
+
+                    chatStatus.textContent =
+                        "Chat connection failed.";
+
+                }
+
+            );
+
+
+            chatStatus.textContent =
+                "Connected to Jello Chat";
+
+
+            /* =========================
+               PRESENCE
+               ========================= */
+
+            const onlineCount =
+                document.getElementById(
+                    "onlineCount"
+                );
+
+            const onlineUserList =
+                document.getElementById(
+                    "onlineUserList"
+                );
+
+
+            let jelloUserID =
+                localStorage.getItem(
+                    "jelloPresenceID"
+                );
+
+
+            if (!jelloUserID) {
+
+                if (
+                    crypto &&
+                    typeof crypto.randomUUID ===
+                    "function"
+                ) {
+
+                    jelloUserID =
+                        crypto.randomUUID();
+
+                } else {
+
+                    jelloUserID =
+                        "user-" +
+                        Date.now() +
+                        "-" +
+                        Math.random()
+                            .toString(36)
+                            .substring(2);
+
+                }
+
+
+                localStorage.setItem(
+                    "jelloPresenceID",
+                    jelloUserID
+                );
+
+            }
+
+
+            const presenceRef =
+                ref(
+                    database,
+                    "jelloPresence/" +
+                    jelloUserID
+                );
+
+
+            const connectedRef =
+                ref(
+                    database,
+                    ".info/connected"
+                );
+
+
+            onValue(
+
+                connectedRef,
+
+                function(snapshot) {
+
+                    if (
+                        snapshot.val() === true
+                    ) {
+
+                        onDisconnect(
+                            presenceRef
+                        ).remove();
+
+
+                        set(
+                            presenceRef,
+                            {
+
+                                username:
+                                    getUsername(),
+
+                                connectedAt:
+                                    serverTimestamp()
+
+                            }
+                        );
+
+                    }
+
+                }
+
+            );
+
+
+            const presenceListRef =
+                ref(
+                    database,
+                    "jelloPresence"
+                );
+
+
+            onValue(
+
+                presenceListRef,
+
+                function(snapshot) {
+
+                    const users =
+                        snapshot.val();
+
+
+                    if (!users) {
+
+                        onlineCount.textContent =
+                            "0";
+
+                        onlineUserList.innerHTML =
+                            `
+                            <span style="
+                                color:
+                                rgba(255,255,255,0.4);
+                            ">
+                                Nobody online
+                            </span>
+                            `;
+
+                        return;
+
+                    }
+
+
+                    const userIDs =
+                        Object.keys(users);
+
+
+                    onlineCount.textContent =
+                        userIDs.length;
+
+
+                    onlineUserList.innerHTML =
+                        "";
+
+
+                    userIDs.forEach(
+                        function(userID) {
+
+                            const user =
+                                users[userID];
+
+
+                            const username =
+                                user.username ||
+                                "Guest";
+
+
+                            const userElement =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            userElement.className =
+                                "online-user";
+
+
+                            const dot =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            dot.className =
+                                "online-user-dot";
+
+
+                            const usernameElement =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            usernameElement.textContent =
+                                username;
+
+
+                            userElement.appendChild(
+                                dot
+                            );
+
+                            userElement.appendChild(
+                                usernameElement
+                            );
+
+                            onlineUserList.appendChild(
+                                userElement
+                            );
+
+                        }
+                    );
+
+                }
+
+            );
+
+        } else {
+
+            chatStatus.textContent =
+                "Chat unavailable.";
+
+        }
+
+    </script>
 
 
     <!-- =========================
          QUICK SETTINGS
          ========================= -->
 
+    <script src="assets/settings.js"></script>
     <script>
 
         const background =
@@ -1782,61 +2282,6 @@
             }
         );
 
-
-        /* =========================
-           COPY IP
-           ========================= */
-
-        window.copyIP =
-            function(ip, button) {
-
-                if (
-                    navigator.clipboard &&
-                    navigator.clipboard.writeText
-                ) {
-
-                    navigator.clipboard
-                        .writeText(ip)
-                        .then(function() {
-
-                            const oldText =
-                                button.textContent;
-
-
-                            button.textContent =
-                                "Copied!";
-
-
-                            setTimeout(
-                                function() {
-
-                                    button.textContent =
-                                        oldText;
-
-                                },
-                                1200
-                            );
-
-                        })
-                        .catch(function() {
-
-                            alert(
-                                "Server IP: " +
-                                ip
-                            );
-
-                        });
-
-                } else {
-
-                    alert(
-                        "Server IP: " +
-                        ip
-                    );
-
-                }
-
-            };
 
     </script>
 
