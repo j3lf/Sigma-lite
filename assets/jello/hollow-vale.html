@@ -2354,9 +2354,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
       };
     }
 
-    if (localStorage.getItem('noTabClose') === 'true') {
-      enableSavedNoTabClose();
-    }
+    enableSavedNoTabClose();
 
     const run = async () => {
       const projectData = await getProjectData();
