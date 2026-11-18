@@ -1378,7 +1378,7 @@
      ========================= -->
 
 <div class="version">
-    5.0.4 Beta
+    5.0.5 Beta
 </div>
 
 
@@ -1687,10 +1687,6 @@
             "quickNoTabClose"
         );
 
-    const quickFullscreen =
-        document.getElementById(
-            "quickFullscreen"
-        );
 
     const quickMouseBackground =
         document.getElementById(
@@ -2428,49 +2424,6 @@
        FULL SCREEN
        ========================= */
 
-    quickFullscreen.addEventListener(
-        "change",
-        function() {
-
-            if (this.checked) {
-
-                if (
-                    document
-                        .documentElement
-                        .requestFullscreen
-                ) {
-
-                    document
-                        .documentElement
-                        .requestFullscreen();
-
-                }
-
-            } else {
-
-                if (
-                    document.fullscreenElement
-                ) {
-
-                    document.exitFullscreen();
-
-                }
-
-            }
-
-        }
-    );
-
-
-    document.addEventListener(
-        "fullscreenchange",
-        function() {
-
-            quickFullscreen.checked =
-                !!document.fullscreenElement;
-
-        }
-    );
 
 
     /* =========================

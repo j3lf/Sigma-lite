@@ -14,6 +14,13 @@
         script.dataset.jelloIrcBootstrap = "";
         document.head.appendChild(script);
     }
+    const mainPages = ["", "index.html", "games.html", "settings.html", "changelogs.html", "jelloportal.html", "music.html"];
+    if (mainPages.includes(page) && !document.querySelector("script[data-jello-fullscreen]")) {
+        const script = document.createElement("script");
+        script.src = new URL("fullscreen.js", document.currentScript.src).href;
+        script.dataset.jelloFullscreen = "";
+        document.head.appendChild(script);
+    }
 }
 
 function enableSavedNoTabClose() {

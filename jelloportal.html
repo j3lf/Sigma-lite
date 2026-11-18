@@ -1176,7 +1176,7 @@
     <!-- VERSION -->
 
     <div class="version">
-        5.0.4 Beta
+        5.0.5 Beta
     </div>
 
 
@@ -1835,10 +1835,6 @@
                 "noTabCloseToggle"
             );
 
-        const fullScreenToggle =
-            document.getElementById(
-                "fullScreenToggle"
-            );
 
         const mouseBackgroundToggle =
             document.getElementById(
@@ -1986,81 +1982,6 @@
            FULL SCREEN
            ========================= */
 
-        fullScreenToggle.addEventListener(
-            "change",
-            async function() {
-
-                if (
-                    fullScreenToggle.checked
-                ) {
-
-                    try {
-
-                        if (
-                            document
-                                .documentElement
-                                .requestFullscreen
-                        ) {
-
-                            await document
-                                .documentElement
-                                .requestFullscreen();
-
-                        }
-
-                    } catch (error) {
-
-                        console.error(
-                            "Fullscreen error:",
-                            error
-                        );
-
-                        fullScreenToggle.checked =
-                            false;
-
-                    }
-
-                } else {
-
-                    try {
-
-                        if (
-                            document.fullscreenElement
-                        ) {
-
-                            await document
-                                .exitFullscreen();
-
-                        }
-
-                    } catch (error) {
-
-                        console.error(
-                            "Exit fullscreen error:",
-                            error
-                        );
-
-                    }
-
-                }
-
-            }
-        );
-
-
-        /* =========================
-           FULLSCREEN STATE
-           ========================= */
-
-        document.addEventListener(
-            "fullscreenchange",
-            function() {
-
-                fullScreenToggle.checked =
-                    !!document.fullscreenElement;
-
-            }
-        );
 
 
         /* =========================

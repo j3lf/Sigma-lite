@@ -524,14 +524,14 @@
 </div>
 
 
-<!-- VERSION 5.0.4 BETA -->
+<!-- VERSION 5.0.5 BETA -->
 
 <div class="changelog">
 
     <div class="version-header">
 
         <div class="version">
-            Sigma 5.0.4 Beta
+            Sigma 5.0.5 Beta
         </div>
 
         <div class="version-badge">
@@ -541,8 +541,27 @@
     </div>
 
     <div class="date">
-        November 13, 2026
+        November 18, 2026
     </div>
+
+    <ul class="features">
+        <li>Fixed bugs.</li>
+        <li>Updated site features.</li>
+        <li>Added IRC.</li>
+    </ul>
+
+</div>
+
+
+<!-- VERSION 5.0.4 BETA -->
+
+<div class="changelog old-version">
+
+    <div class="version-header">
+        <div class="version">Sigma 5.0.4 Beta</div>
+    </div>
+
+    <div class="date">November 13, 2026</div>
 
     <ul class="features">
         <li>Added more stuff.</li>
@@ -1042,10 +1061,6 @@ onclick="navigateWithinJello('index.html')"
             "quickNoTabClose"
         );
 
-    const quickFullscreen =
-        document.getElementById(
-            "quickFullscreen"
-        );
 
     const quickFallingSnow =
         document.getElementById(
@@ -1128,47 +1143,6 @@ onclick="navigateWithinJello('index.html')"
     );
 
 
-    quickFullscreen.addEventListener(
-        "change",
-        function() {
-
-            if (this.checked) {
-
-                if (
-                    document.documentElement
-                        .requestFullscreen
-                ) {
-
-                    document.documentElement
-                        .requestFullscreen();
-
-                }
-
-            } else {
-
-                if (
-                    document.fullscreenElement
-                ) {
-
-                    document.exitFullscreen();
-
-                }
-
-            }
-
-        }
-    );
-
-
-    document.addEventListener(
-        "fullscreenchange",
-        function() {
-
-            quickFullscreen.checked =
-                !!document.fullscreenElement;
-
-        }
-    );
 
 
     let mouseBackgroundEnabled =
