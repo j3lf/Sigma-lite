@@ -8,6 +8,9 @@
   <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:">
   <title>Document</title>
   <script src="../settings.js"></script>
+  <script src="hollow-portraits.js"></script>
+  <script src="hollow-legacy.js"></script>
+  <script src="hollow-saves.js"></script>
   <script>enableSavedNoTabClose();</script>
   <style>
     body {
@@ -66,6 +69,60 @@
     }
     #full-bright { right: 12px; }
     #back-to-jello { left: 12px; text-decoration: none; }
+    #character-picker {
+      padding: 0; border: 0; width: min(780px, 94vw); max-width: 94vw;
+      max-height: 96dvh; overflow: auto; background: transparent; color: #fff;
+      font-family: 'Trebuchet MS', sans-serif; text-shadow: 2px 2px #101222;
+    }
+    #character-picker::backdrop { background: #11152b75; }
+    .player-logo { display: block; width: min(560px, 80vw); height: 130px; object-fit: contain; margin: 0 auto; image-rendering: pixelated; }
+    #character-picker h2 {
+      position: relative; width: fit-content; margin: 0 auto -3px; padding: 8px 20px;
+      background: #4b5996; border: 3px solid #171a32; border-radius: 14px 14px 7px 7px;
+      font-size: clamp(24px, 4vw, 34px); font-weight: normal; z-index: 1;
+    }
+    #character-picker-list {
+      display: flex; flex-direction: column; gap: 9px; height: min(52dvh, 520px);
+      overflow-y: auto; padding: 13px; background: #29345bde;
+      border: 3px solid #10152c; border-radius: 10px; box-shadow: inset 0 0 0 3px #6474ac;
+      scrollbar-color: #b6c9ef #202b51;
+    }
+    .player-card {
+      display: grid; grid-template-columns: 64px 1fr; gap: 5px 12px;
+      padding: 9px 12px; border: 2px solid #6c80c4; border-radius: 12px;
+      background: linear-gradient(120deg, #495b97e8, #3b477ee8); flex-shrink: 0;
+    }
+    .player-avatar { width: 60px; height: 72px; grid-row: span 3; image-rendering: pixelated; background: #242f59; border: 2px solid #7686bf; border-radius: 8px; }
+    .player-name { margin: 0; font-size: 22px; overflow-wrap: anywhere; }
+    .player-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+    .player-stats span { min-width: 90px; padding: 3px 8px; background: #27345d; border-radius: 4px; }
+    .player-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    #character-picker button, #character-picker select {
+      color: white; padding: 7px 12px; font: inherit; text-shadow: inherit;
+      background: #3d5088; border: 2px solid #7185c2; border-radius: 5px; cursor: pointer;
+    }
+    #character-picker button:hover, #character-picker button:focus-visible { background: #536bab; border-color: #e7d88a; }
+    .player-footer { display: flex; gap: 20px; margin-top: 14px; }
+    .player-footer button { flex: 1; font-size: 26px !important; border-color: #121a34 !important; border-radius: 12px !important; }
+    #character-picker-status { margin: 8px 0; text-align: center; }
+    #character-picker-status:empty { display: none; }
+    .player-backups { margin: 12px 0; padding: 9px; background: #27345de8; border-radius: 8px; }
+    .player-backups summary { cursor: pointer; }
+    #character-saves { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-top: 8px; }
+    #character-save-message { flex-basis: 100%; font-size: 13px; }
+    @media (max-height: 650px) { .player-logo { height: 75px; } #character-picker-list { height: 44dvh; } }
+    #legacy-import-dialog {
+      width: min(600px, 88vw); max-height: 88dvh; overflow: auto;
+      background: #29345b; color: white; border: 2px solid #7185c2; border-radius: 10px;
+    }
+    #legacy-import-dialog::backdrop { background: #101525aa; }
+    #legacy-import-form label { display: block; margin: 12px 0; }
+    #legacy-import-form input, #legacy-import-form textarea {
+      display: block; box-sizing: border-box; width: 100%; margin-top: 5px; padding: 8px;
+      font: inherit; color: white; background: #17233f; border: 1px solid #7185c2;
+    }
+    #legacy-import-form textarea { height: 170px; font-family: monospace; resize: vertical; }
+    #legacy-import-form button { padding: 8px 15px; margin-right: 8px; cursor: pointer; }
     #loading {
       
     }
@@ -149,6 +206,44 @@
 </head>
 <body>
   <div id="app"></div>
+  <dialog id="character-picker" aria-labelledby="character-picker-title">
+    <img id="character-menu-logo" class="player-logo" src="hollow-menu-logo.png" alt="Terraria">
+    <h2 id="character-picker-title">Select Player</h2>
+    <p id="character-picker-status" role="status"></p>
+    <div id="character-picker-list"></div>
+    <div class="player-footer">
+      <button id="character-picker-back" type="button">Back</button>
+      <button id="picker-new-character" type="button">New</button>
+    </div>
+    <details class="player-backups">
+      <summary>Import &amp; Export Saves</summary>
+      <section id="character-saves" aria-label="Characters and save backups">
+    <label for="saved-character">Characters</label>
+    <select id="saved-character"></select>
+    <button id="export-character" type="button">Export Character</button>
+    <label for="saved-world">Worlds</label>
+    <select id="saved-world"></select>
+    <button id="export-world" type="button">Export World</button>
+    <button id="export-saves" type="button">Export All Saves</button>
+    <button id="import-saves" type="button">Import JSON</button>
+    <button id="import-legacy-save" type="button">Import Legacy Code</button>
+    <input id="import-save-file" type="file" accept=".json,application/json" hidden>
+    <span id="character-save-message" role="status"></span>
+      </section>
+    </details>
+  </dialog>
+  <dialog id="legacy-import-dialog" aria-labelledby="legacy-import-title">
+    <form id="legacy-import-form">
+      <h2 id="legacy-import-title">Import Legacy Save</h2>
+      <p>Paste the original save code to import its world and character.</p>
+      <label>World name<input id="legacy-world-name" maxlength="65" value="Imported World" required></label>
+      <label>Character name<input id="legacy-character-name" maxlength="80" value="Imported Character" required></label>
+      <label>Save code<textarea id="legacy-save-code" spellcheck="false" required></textarea></label>
+      <p id="legacy-import-status" role="status"></p>
+      <button id="legacy-import-submit" type="submit">Import</button>
+      <button id="legacy-import-cancel" type="button">Cancel</button>
+    </form>
+  </dialog>
   <a id="back-to-jello" href="../../index.html" hidden
     onclick="navigateWithinJello(this.href, event)">Back to Jello</a>
   <button id="full-bright" type="button" aria-pressed="false" hidden>Full Bright: Off</button>
@@ -1194,7 +1289,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
       return privateData;
     }
 
-    function installWorldPersistence(project, updateDisplaySettings) {
+    function installWorldPersistence(project, updateDisplaySettings, characters) {
       const stage = project.targets.find(target => target.isStage);
       const saver = project.targets.find(target => target.name === 'Save');
       const encoderData = isolateWorldEncoder(stage, saver);
@@ -1266,6 +1361,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
       return function startPersistence() {
         const runtime = vm.runtime;
+        characters.start(runtime);
         const getState = () => runtime.getTargetForStage().variables;
         const saveTarget = runtime.targets.find(target => target.isOriginal && target.getName() === 'Save');
         const snapshotContainers = state => {
@@ -1277,17 +1373,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         let lastNames = getState()[names].value.slice();
         let lastIcons = getState()[icons].value.slice();
         let pending;
+        let nativeSaving;
         const nativeSnapshots = new WeakSet();
         const changed = (current, previous) =>
           current.length !== previous.length || current.some((value, index) => value !== previous[index]);
 
-        function persist(state) {
+        function persist(state, force = false) {
           const worldList = state[worlds].value;
           const nameList = state[names].value;
           const iconList = state[icons].value;
-          if (!changed(worldList, lastWorlds) && !changed(nameList, lastNames) && !changed(iconList, lastIcons)) return true;
+          if (!force && !changed(worldList, lastWorlds) && !changed(nameList, lastNames) &&
+              !changed(iconList, lastIcons)) return true;
           try {
-            localStorage.setItem(storageKey, JSON.stringify({ worlds: worldList, names: nameList, icons: iconList }));
+            const characterLibrary = characters.pack();
+            localStorage.setItem(storageKey, JSON.stringify({
+              worlds: worldList, names: nameList, icons: iconList, characterLibrary
+            }));
+            characters.committed(characterLibrary);
             lastWorlds = worldList.slice();
             lastNames = nameList.slice();
             lastIcons = iconList.slice();
@@ -1308,6 +1410,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
           if (!Number.isInteger(index) || index < 1 || index > state[worlds].value.length) return;
           const before = state[codes].value.length;
           snapshotContainers(state);
+          characters.stageSave();
           const threads = runtime.startHats('event_whenbroadcastreceived', { BROADCAST_OPTION: broadcast });
           if (!threads.length) return;
           pending = { index, before, threads };
@@ -1324,12 +1427,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
               thread.topBlock === 'dkh' && runtime.isActiveThread(thread));
             if (nativeThread && !nativeSnapshots.has(nativeThread)) {
               snapshotContainers(previousState);
+              characters.stageSave();
+              nativeSaving = nativeThread;
               nativeSnapshots.add(nativeThread);
             }
           }
           step();
           const state = getState();
           updateDisplaySettings(state);
+          characters.update(state);
           backToJello.hidden = state[menu].value !== 'main';
           panel.hidden = !canSave(state);
           if (pending && pending.threads.every(thread => !runtime.isActiveThread(thread))) {
@@ -1337,7 +1443,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             if (typeof code === 'string' && code.length && canSave(state) &&
                 Number(state[position].value) - 1 === pending.index) {
               state[worlds].value[pending.index] = code;
-              if (persist(state)) status.textContent = 'World saved.';
+              if (persist(state, true)) status.textContent = 'World saved.';
             } else {
               status.textContent = 'Could not encode this world.';
             }
@@ -1346,7 +1452,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             button.disabled = false;
           }
           // Native save-and-quit, imports, and deletions update these same lists.
-          persist(state);
+          const nativeFinished = nativeSaving && !runtime.isActiveThread(nativeSaving);
+          if (persist(state, Boolean(nativeFinished)) && nativeFinished) nativeSaving = undefined;
         };
         button.addEventListener('click', () => {
           if (getState()[containerType].value !== '') {
@@ -1363,7 +1470,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
       const project = JSON.parse(new TextDecoder().decode(projectData));
       enableInventoryClickPlacement(project);
       const updateDisplaySettings = installFullBright(project);
-      const startPersistence = installWorldPersistence(project, updateDisplaySettings);
+      const characters = installHollowCharacters(project);
+      const startPersistence = installWorldPersistence(project, updateDisplaySettings, characters);
       await scaffolding.loadProject(JSON.stringify(project));
       startPersistence();
       setProgress(1);

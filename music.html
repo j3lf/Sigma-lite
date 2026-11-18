@@ -228,7 +228,7 @@
         <h2>Your Library</h2>
         <p class="track-count" id="track-count">0 tracks</p>
         <div class="file-picker">
-            <label for="audio-files">Add session tracks</label>
+            <label for="audio-files">Add music files</label>
             <input id="audio-files" type="file" accept="audio/*,.mp3,.m4a,.ogg,.wav,.flac" multiple>
         </div>
         <section class="playlists" aria-labelledby="playlists-heading">
@@ -330,6 +330,8 @@
         let libraryMessage = "Loading saved tracks…";
         let currentTrack = null;
         let currentURL;
+        let musicDatabase;
+        let databaseOpening;
 
         function loadPlaylists() {
             try {
@@ -482,7 +484,7 @@
                 ? (entries.length ? "" : "Add tracks from your library.")
                 : libraryMessage || (tracks.size ? "" : "Add audio files to start listening.");
             if (selectedPlaylist && entries.some(track => track.id.startsWith("session:") && !tracks.has(track.id))) {
-                queueMessage.textContent = "Add the original audio files again to play unavailable session tracks.";
+                queueMessage.textContent = "Add the original audio files again to restore unavailable tracks.";
             }
             queue.replaceChildren(...entries.map(renderTrack));
             playlistActions.hidden = !selectedPlaylist;
@@ -552,14 +554,49 @@
             playlistSelect.focus();
         });
 
-        files.addEventListener("change", () => {
-            for (const file of files.files) {
-                const id = "session:" + JSON.stringify([file.name, file.size, file.lastModified]);
+        files.addEventListener("change", async () => {
+            const imported = Array.from(files.files, file => ({
+                id: "session:" + JSON.stringify([file.name, file.size, file.lastModified]),
+                name: file.name,
+                blob: file
+            }));
+            files.value = "";
+            if (!imported.length) return;
+            files.disabled = true;
+            libraryMessage = "Saving music files…";
+            renderQueue();
+            try {
+                await libraryReady;
+                const database = await getMusicDatabase();
+                await new Promise((resolve, reject) => {
+                    const transaction = database.transaction("mp3Files", "readwrite");
+                    const library = transaction.objectStore("mp3Files");
+                    transaction.oncomplete = resolve;
+                    transaction.onabort = () => reject(transaction.error || new Error("Music files could not be saved."));
+                    try {
+                        for (const track of imported) {
+                            const record = { ...track, trackId: track.id };
+                            if (library.keyPath === null) library.put(record, record.id);
+                            else library.put(record);
+                        }
+                    } catch (error) {
+                        transaction.abort();
+                        reject(error);
+                    }
+                });
+                libraryMessage = "";
+                playlistStatus.textContent = "";
+            } catch (error) {
+                libraryMessage = "Could not save these files. They are available for this visit only.";
+                playlistStatus.textContent = libraryMessage;
+                console.warn("Could not save music files", error);
+            }
+            for (const { id, name, blob } of imported) {
                 if (!tracks.has(id)) {
-                    addTrack(id, file.name, file);
+                    addTrack(id, name, blob);
                 }
             }
-            files.value = "";
+            files.disabled = false;
             renderQueue();
         });
 
@@ -633,40 +670,76 @@
             renderQueue();
         }
 
-        // Read the tracks imported by the original Jello Music player.
-        function loadSavedTracks() {
-            let libraryMissing = false;
-            const request = indexedDB.open("JelloMusicDatabase");
-            request.onupgradeneeded = () => {
-                libraryMissing = true;
-                request.transaction.abort();
-            };
-            request.onerror = () => {
-                if (libraryMissing) {
-                    showEmptyQueue();
-                } else {
-                    showLibraryError();
-                }
-            };
-            request.onsuccess = () => {
-                const database = request.result;
-                if (!database.objectStoreNames.contains("mp3Files")) {
-                    database.close();
-                    showEmptyQueue();
-                    return;
-                }
-
-                const transaction = database.transaction("mp3Files", "readonly");
-                const library = transaction.objectStore("mp3Files").getAll();
-                library.onsuccess = () => {
-                    for (const { id, name, blob } of library.result) {
-                        addTrack("saved:" + id, name, blob);
+        function openMusicDatabase(version) {
+            return new Promise((resolve, reject) => {
+                const request = version
+                    ? indexedDB.open("JelloMusicDatabase", version)
+                    : indexedDB.open("JelloMusicDatabase");
+                let blocked = false;
+                request.onupgradeneeded = () => {
+                    if (blocked) {
+                        request.transaction.abort();
+                        return;
                     }
-                    showEmptyQueue();
+                    if (!request.result.objectStoreNames.contains("mp3Files")) {
+                        request.result.createObjectStore("mp3Files", { keyPath: "id" });
+                    }
                 };
-                transaction.onerror = showLibraryError;
-                database.close();
-            };
+                request.onblocked = () => {
+                    blocked = true;
+                    reject(new Error("Close other music tabs so browser storage can be updated."));
+                };
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    const database = request.result;
+                    if (blocked) {
+                        database.close();
+                        return;
+                    }
+                    if (!database.objectStoreNames.contains("mp3Files")) {
+                        const nextVersion = database.version + 1;
+                        database.close();
+                        resolve(openMusicDatabase(nextVersion));
+                        return;
+                    }
+                    database.onversionchange = () => {
+                        database.close();
+                        if (musicDatabase === database) musicDatabase = undefined;
+                    };
+                    resolve(database);
+                };
+            });
+        }
+
+        function getMusicDatabase() {
+            if (!window.indexedDB) return Promise.reject(new Error("Browser music storage is unavailable."));
+            if (musicDatabase) return Promise.resolve(musicDatabase);
+            if (!databaseOpening) {
+                databaseOpening = openMusicDatabase().then(database => {
+                    musicDatabase = database;
+                    return database;
+                }).finally(() => { databaseOpening = undefined; });
+            }
+            return databaseOpening;
+        }
+
+        async function loadSavedTracks() {
+            try {
+                const database = await getMusicDatabase();
+                const records = await new Promise((resolve, reject) => {
+                    const transaction = database.transaction("mp3Files", "readonly");
+                    const request = transaction.objectStore("mp3Files").getAll();
+                    transaction.oncomplete = () => resolve(request.result);
+                    transaction.onabort = () => reject(transaction.error || new Error("Saved music could not be loaded."));
+                });
+                for (const { id, trackId, name, blob } of records) {
+                    if (blob instanceof Blob) addTrack(trackId || "saved:" + id, name, blob);
+                }
+                showEmptyQueue();
+            } catch (error) {
+                console.warn("Could not load saved music", error);
+                showLibraryError();
+            }
         }
 
         function showEmptyQueue() {
@@ -675,11 +748,7 @@
         }
 
         renderPlaylists();
-        if (window.indexedDB) {
-            loadSavedTracks();
-        } else {
-            showLibraryError();
-        }
+        const libraryReady = loadSavedTracks();
     </script>
 </body>
 </html>

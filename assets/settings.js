@@ -1,5 +1,21 @@
 // Sigma Jello site-wide settings
 
+// Keep chat and presence active across the main pages and game players.
+{
+    const ircPages = [
+        "", "index.html", "games.html", "settings.html", "changelogs.html", "jelloportal.html", "music.html",
+        "hollow-vale.html", "hollow-updated.html", "flash.html"
+    ];
+    const page = location.pathname.split("/").pop().toLowerCase();
+    if (ircPages.includes(page) && !document.querySelector("script[data-jello-irc-bootstrap], script[data-jello-irc-loader]")) {
+        const script = document.createElement("script");
+        script.async = false;
+        script.src = new URL("jello-irc-loader.js", document.currentScript.src).href;
+        script.dataset.jelloIrcBootstrap = "";
+        document.head.appendChild(script);
+    }
+}
+
 function enableSavedNoTabClose() {
     window.onbeforeunload = function(event) {
         event.preventDefault();

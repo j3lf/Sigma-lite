@@ -992,6 +992,7 @@
 
     </style>
 
+    <script src="assets/jello-firebase.js"></script>
 </head>
 
 
@@ -1340,49 +1341,10 @@
 
     <script type="module">
 
-        import {
-            initializeApp
-        } from
-        "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-
-        import {
-            getDatabase,
-            ref,
-            push,
-            onChildAdded,
-            set,
-            onValue,
-            onDisconnect,
-            serverTimestamp,
-            remove
-        } from
-        "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+        const { getJelloDatabase, connectJelloPresence, sdk } = await loadJelloFirebase();
+        const { ref, push, set, onChildAdded, onValue, serverTimestamp, remove } = sdk;
 
 
-        const firebaseConfig = {
-
-            apiKey:
-                "AIzaSyAIZJ7mReibw8J48F6yRut7GQAqWMalN-E",
-
-            authDomain:
-                "sigma-jello.firebaseapp.com",
-
-            databaseURL:
-                "https://sigma-jello-default-rtdb.firebaseio.com",
-
-            projectId:
-                "sigma-jello",
-
-            storageBucket:
-                "sigma-jello.firebasestorage.app",
-
-            messagingSenderId:
-                "643520880930",
-
-            appId:
-                "1:643520880930:web:2d06c3244f500be039c57b"
-
-        };
 
 
         /* =========================
@@ -1393,11 +1355,7 @@
 
         try {
 
-            const app =
-                initializeApp(firebaseConfig);
-
-            database =
-                getDatabase(app);
+            database = getJelloDatabase();
 
         } catch (error) {
 
@@ -1489,21 +1447,23 @@
 
             try {
 
-                await push(
-                    ref(
-                        database,
-                        "jelloChat"
-                    ),
+                const messageRef = push(ref(database, "jelloChat"));
+                let sentMessages = [];
+                try {
+                    const stored = JSON.parse(localStorage.getItem("jelloOwnChatIDs") || "[]");
+                    if (Array.isArray(stored)) sentMessages = stored;
+                } catch {}
+                localStorage.setItem("jelloOwnChatIDs", JSON.stringify([...sentMessages, messageRef.key].slice(-100)));
+                await set(
+                    messageRef,
                     {
 
-                        username:
-                            getUsername(),
+                        username: getUsername(),
 
                         message:
                             text,
 
-                        timestamp:
-                            Date.now()
+                        timestamp: serverTimestamp()
 
                     }
                 );
@@ -1730,93 +1690,11 @@
                 );
 
 
-            let jelloUserID =
-                localStorage.getItem(
-                    "jelloPresenceID"
-                );
-
-
-            if (!jelloUserID) {
-
-                if (
-                    crypto &&
-                    typeof crypto.randomUUID ===
-                    "function"
-                ) {
-
-                    jelloUserID =
-                        crypto.randomUUID();
-
-                } else {
-
-                    jelloUserID =
-                        "user-" +
-                        Date.now() +
-                        "-" +
-                        Math.random()
-                            .toString(36)
-                            .substring(2);
-
-                }
-
-
-                localStorage.setItem(
-                    "jelloPresenceID",
-                    jelloUserID
-                );
-
-            }
-
-
-            const presenceRef =
-                ref(
-                    database,
-                    "jelloPresence/" +
-                    jelloUserID
-                );
-
-
-            const connectedRef =
-                ref(
-                    database,
-                    ".info/connected"
-                );
-
-
-            onValue(
-
-                connectedRef,
-
-                function(snapshot) {
-
-                    if (
-                        snapshot.val() === true
-                    ) {
-
-                        onDisconnect(
-                            presenceRef
-                        ).remove();
-
-
-                        set(
-                            presenceRef,
-                            {
-
-                                username:
-                                    getUsername(),
-
-                                connectedAt:
-                                    serverTimestamp()
-
-                            }
-                        );
-
-                    }
-
-                }
-
-            );
-
+            let stopPortalPresence = connectJelloPresence(database);
+            window.addEventListener("pagehide", () => stopPortalPresence());
+            window.addEventListener("pageshow", event => {
+                if (event.persisted) stopPortalPresence = connectJelloPresence(database);
+            });
 
             const presenceListRef =
                 ref(
@@ -1855,23 +1733,23 @@
                     }
 
 
-                    const userIDs =
-                        Object.keys(users);
+                    const uniqueUsers = new Map();
+                    Object.entries(users).forEach(([connectionID, user]) => {
+                        if (user && typeof user === "object") uniqueUsers.set(user.userId || connectionID.split("~")[0], user);
+                    });
+                    const onlineUsers = [...uniqueUsers.values()];
 
 
                     onlineCount.textContent =
-                        userIDs.length;
+                        onlineUsers.length;
 
 
                     onlineUserList.innerHTML =
                         "";
 
 
-                    userIDs.forEach(
-                        function(userID) {
-
-                            const user =
-                                users[userID];
+                    onlineUsers.forEach(
+                        function(user) {
 
 
                             const username =
