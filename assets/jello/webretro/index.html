@@ -33,6 +33,7 @@
     <link rel="apple-touch-icon" href="assets/icons/iconm256.png">
 
     <link rel="manifest" href="manifest.json">
+    <script defer data-jello-irc-bootstrap src="../../jello-irc-loader.js"></script>
 
 </head>
 
@@ -1836,14 +1837,14 @@
         );
 
 
-    const mainArea =
+    const webRetroMenuArea =
         document.getElementById("mainarea");
 
 
-    if (mainArea) {
+    if (webRetroMenuArea) {
 
         webRetroMenuObserver.observe(
-            mainArea,
+            webRetroMenuArea,
             {
                 childList: true,
                 subtree: true
